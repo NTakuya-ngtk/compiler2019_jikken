@@ -9,6 +9,7 @@ typedef enum{
 	     
 } Scope;
 
+/* LLVM 命令の種類 */
 typedef enum{
 	Alloca,   /* alloca */
 	Store,    /* Store */
@@ -21,6 +22,17 @@ typedef enum{
 	Icmp,      /* icmp   */
 	Ret       /* ret    */     
 } LLVMcommand;
+
+/* 比較演算子の種類 */
+typedef enum {
+	EQUAL, /* eq （==）*/
+	NE, /* ne （!=）*/
+	SGT, /* sgt （>，符号付き） */
+	SGE, /* sge （>=，符号付き）*/
+	SLT, /* slt （<，符号付き） */
+	SLE /* sle （<=，符号付き）*/
+} Cmptype;
+
 
 /* 構造体で記号表の線形リストを実現する */
 typedef struct{
