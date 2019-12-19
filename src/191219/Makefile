@@ -1,7 +1,7 @@
 YACC = yacc -d
 
 parser: y.tab.c lex.yy.c symbol.c createllvm.c
-	gcc y.tab.c lex.yy.c -ll -o parser
+	gcc y.tab.c lex.yy.c -ll -o parser -g
 
 y.tab.c: parser.y
 	$(YACC) parser.y

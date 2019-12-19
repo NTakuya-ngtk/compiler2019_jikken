@@ -24,9 +24,10 @@ void factorpush(Factor x){
 	return;
 }
 
-void memoryGet(LLVMcode *tmp){
+LLVMcode* memoryGet(LLVMcode *tmp){
 	tmp = (LLVMcode *)malloc(sizeof(LLVMcode)); /*メモリ確保*/
 	tmp->next = NULL;
+	return tmp;
 }
 
 

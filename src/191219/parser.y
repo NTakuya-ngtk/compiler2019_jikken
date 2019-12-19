@@ -48,7 +48,7 @@ program
 					/* 以下プログラム名からmain関数のLLVMコードを生成するCプログラム*/
 					Fundecl *new;
 					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリ確保
-					//最初の1つ目のプログラムであるため、hdもtlも初期化
+					/* 最初の1つ目のプログラムであるため、hdもtlも初期化 */
 					declhd = new;   
 					decltl = new; 
 					new->next = NULL;
@@ -56,7 +56,7 @@ program
 					strcpy(new->fname,"main");
 					
 					/* あとから決定される*/
-					 new->codes = codehd;
+					//new->codes = codehd;
 					/* あとから決定される */
 					new->next = NULL;
 					/*-----------------------------------------------------*/
@@ -153,7 +153,7 @@ proc_call_statement
        ;
 
 proc_call_name
-       : IDENT{ lookup($1);}
+       : IDENT { lookup($1);}
        ;
 
 block_statement
@@ -190,7 +190,7 @@ expression
 				 /* 加算命令をLLVMコードとして生成するCプログラム */
 				 LLVMcode *tmp;            //生成した命令へのポインタ
 				 Factor arg1, arg2,retval; //加算の引数、結果
-				 memoryGet(tmp);          //mallocによるメモリ確保
+				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
 				 //↑もしかしたら返り値として*tmpにしないといけないかもしれない
 
 				 tmp->command = Add;
@@ -222,7 +222,7 @@ term
 
 factor
        : var_name
-       | NUMBER{
+       | NUMBER {
 				 //定数引数をスタックへプッシュする
 				 Factor number;
 				 number.val = ($1);
@@ -233,7 +233,7 @@ factor
        ;
 
 var_name
-       : IDENT{ lookup($1);}{
+       : IDENT { lookup($1);}{
 				 //変数引数をスタックへプッシュする
 				 //
 				 //工事中

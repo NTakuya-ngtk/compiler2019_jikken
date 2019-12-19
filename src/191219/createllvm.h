@@ -104,7 +104,7 @@ Fundecl  *decltl = NULL;  // 関数定義の線形リストの末尾の要素を
 void init_fstak(); /*fstackの初期化*/
 Factor factorpop();
 void factorpush(Factor x);
-void memoryGet(LLVMcode *tmp); // memoryを確保する関数
+LLVMcode* memoryGet(LLVMcode *tmp); // memoryを確保する関数
 void addList(LLVMcode *tmp);  // 命令列に新しい要素tmpを加える関数
 
 void displayFactor(Factor factor); //要素の一覧を書き出す関数
