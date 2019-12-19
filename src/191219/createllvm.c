@@ -121,7 +121,7 @@ void displayLLVMcodes(LLVMcode *code){
 			
 			break;
 			
-		case Add:
+		case Add: 
 			displayFactor((code->args).add.retval);
 			printf(" = ");
 			printf("add nsw i32 %d %d",(code->args).add.arg1.val,(code->args).add.arg2.val);
@@ -133,6 +133,13 @@ void displayLLVMcodes(LLVMcode *code){
 			printf(" = ");
 			printf("sub nsw i32 %d %d",(code->args).sub.arg1.val,(code->args).sub.arg2.val);
 			printf("\n");
+			break;
+
+
+		case Mul:
+			break;
+
+		case SDiv:
 			break;
 			
 		case Icmp:

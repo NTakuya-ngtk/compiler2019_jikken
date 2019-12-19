@@ -25,6 +25,8 @@ typedef enum{
 	Label,     /* label  */
 	Add,       /* add    */
 	Sub,       /* sub    */
+	Mul,	  /* mul    */
+	SDiv,		/* sdiv    */
 	Icmp,      /* icmp   */
 	Ret       /* ret    */     
 } LLVMcommand;
@@ -74,6 +76,14 @@ typedef struct llvmcode {
 		struct {   //sub
 			Factor arg1; Factor arg2; Factor retval;
 		}sub;
+
+		struct {   //mul
+			Factor arg1; Factor arg2; Factor retval;
+		}mul;
+
+		struct {   //div
+			Factor arg1; Factor arg2; Factor retval;
+		}sdiv;
 
 		struct {   //icmp
 			Cmptype type; Factor arg1; Factor arg2; Factor retval;
