@@ -47,7 +47,7 @@ void addList(LLVMcode *tmp){
 }
 		
 	 
-void dispalyFactor(Factor factor){
+void displayFactor(Factor factor){
 	switch(factor.type){
 	  case GLOBAL_VAR:
 			printf("@%s", factor.vname);
@@ -65,7 +65,7 @@ void dispalyFactor(Factor factor){
 	return;
 }
 		
-void dispalyLLVMcodes(LLVMcode *code){
+void displayLLVMcodes(LLVMcode *code){
 	if( code == NULL ){
 		return;
 	}
