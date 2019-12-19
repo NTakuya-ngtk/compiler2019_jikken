@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "createllvm.h"
+#include "symbol.h"
 
 Factorstack fstack;  // 整数もしくはレジスタ番号を保持するスタック
 
@@ -12,7 +13,7 @@ void init_fstack(){
 
 Factor factorpop(){
 	Factor tmp;
-	tmp = fstack.element[fstack.pop];
+	tmp = fstack.element[fstack.top];
 	fstack.top --;
 	return tmp;
 }
@@ -48,7 +49,7 @@ void addList(LLVMcode *tmp){
 	 
 void dispalyFactor(Factor factor){
 	switch(factor.type){
-	  case GROBAL_VAR:
+	  case GLOBAL_VAR:
 			printf("@%s", factor.vname);
 			break;
 	  case LOCAL_VAR:
@@ -130,13 +131,13 @@ void dispalyLLVMcodes(LLVMcode *code){
 			
 			break;
 
-	  case ret:
+	  	case Ret:
 
 			//工事中//
 			
 			break;
 
-	  default:
+	  	default:
 			break;
 	}
 
@@ -155,7 +156,7 @@ void displayLLVMfundecl(Fundecl *decl){
 	displayLLVMcodes(decl->codes);
 	printf("}\n");
 
-	if(decl->next) != NULL){
+	if(decl->next != NULL){
 	  printf("\n");
 		displayLLVMfundecl(decl->next);// 再帰的に呼び出して、リストを全て出力する
    }

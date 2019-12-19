@@ -6,6 +6,7 @@
 #define MAXLENGTH 16
 
 #include <stdio.h>
+#include <string.h>
 #include "symbol.h"
 #include "symbol.c"
 #include "createllvm.h"
@@ -15,8 +16,8 @@
   extern char *yytext;
 
 	Scope flag = GLOBAL_VAR;
-	init_fstack();  // スタックの初期化を行う
-
+	//init_fstack();  // スタックの初期化を行う
+       int cnrt = 0;     // レジスタ番号
 	
 %}
 
@@ -52,7 +53,7 @@ program
 					decltl = new; 
 					new->next = NULL;
 					
-					new.fname = "main";
+					strcpy(new->fname,"main");
 					
 					/* あとから決定される*/
 					 new->codes = codehd;
@@ -106,7 +107,7 @@ proc_name
        ;
 
 inblock
-       :  {flag = LOCAL_VAR;}var_decl_part statement
+       :  {flag = LOCAL_VAR;} var_decl_part statement
        ;
 
 statement_list
@@ -189,7 +190,7 @@ expression
 				 /* 加算命令をLLVMコードとして生成するCプログラム */
 				 LLVMcode *tmp;            //生成した命令へのポインタ
 				 Factor arg1, arg2,retval; //加算の引数、結果
-				 memoryGet(*tmp);          //mallocによるメモリ確保
+				 memoryGet(tmp);          //mallocによるメモリ確保
 				 //↑もしかしたら返り値として*tmpにしないといけないかもしれない
 
 				 tmp->command = Add;
@@ -203,7 +204,7 @@ expression
 				 (tmp->args).add.arg2 = arg2;   /* 命令の第2引数を指定 */
 				 (tmp->args).add.retval = retval; /* 結果のレジスタを指定*/
 
-				 addList(*tmp);                /* 新規命令として、命令列へ追加する*/
+				 addList(tmp);                /* 新規命令として、命令列へ追加する*/
 				 /* ↑もしかしら戻り値が何かしら必要かもしれない */
 				 
 				 factorpush( retval );       // 加算の結果をスタックへプッシュ
@@ -226,7 +227,7 @@ factor
 				 Factor number;
 				 number.val = ($1);
 				 number.type = CONSTANT;
-				 factorpush($1);
+				 factorpush(number);
          }
        | LPAREN expression RPAREN
        ;
