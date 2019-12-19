@@ -5,7 +5,7 @@ typedef enum{
 	GLOBAL_VAR, /* 大域変数 */
 	LOCAL_VAR,  /* 局所変数 */
 	PROC_NAME,  /* 手続き  */
-  CONSTANT    /* 定数   */
+  	CONSTANT    /* 定数   */
 	     
 } Scope;
 
