@@ -124,14 +124,14 @@ void displayLLVMcodes(LLVMcode *code){
 		case Add: 
 			displayFactor((code->args).add.retval);
 			fprintf(FP," = ");
-			fprintf(FP,"add nsw i32 %d %d",(code->args).add.arg1.val,(code->args).add.arg2.val);
+			fprintf(FP,"add nsw i32 %d, %d",(code->args).add.arg1.val,(code->args).add.arg2.val);
 			fprintf(FP,"\n");
 			break;
 			
 		case Sub:
 			displayFactor((code->args).sub.retval);
 			fprintf(FP," = ");
-			fprintf(FP,"sub nsw i32 %d %d",(code->args).sub.arg1.val,(code->args).sub.arg2.val);
+			fprintf(FP,"sub nsw i32 %d, %d",(code->args).sub.arg1.val,(code->args).sub.arg2.val);
 			fprintf(FP,"\n");
 			break;
 
@@ -139,14 +139,14 @@ void displayLLVMcodes(LLVMcode *code){
 		case Mul:
 			displayFactor((code->args).mul.retval);
 			fprintf(FP," = ");
-			fprintf(FP,"mul nsw i32 %d %d",(code->args).mul.arg1.val,(code->args).mul.arg2.val);
+			fprintf(FP,"mul nsw i32 %d, %d",(code->args).mul.arg1.val,(code->args).mul.arg2.val);
 			fprintf(FP,"\n");
 			break;
 
 		case Div:
 			displayFactor((code->args).sdiv.retval);
 			fprintf(FP," = ");
-			fprintf(FP,"sdiv i32 %d %d",(code->args).sdiv.arg1.val,(code->args).sdiv.arg2.val);
+			fprintf(FP,"sdiv i32 %d, %d",(code->args).sdiv.arg1.val,(code->args).sdiv.arg2.val);
 			fprintf(FP,"\n");
 			break;
 			
