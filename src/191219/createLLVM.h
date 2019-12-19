@@ -1,6 +1,16 @@
 #ifndef _CREATELLVM_H
 #define _CREATELLVM_H
 
+
+typedef enum{
+	GLOBAL_VAR, /* 大域変数 */
+	LOCAL_VAR,  /* 局所変数 */
+	PROC_NAME,  /* 手続き  */
+  	CONSTANT    /* 定数   */
+	     
+} Scope;
+
+
 /* 引数を表す構造体 */
 typedef struct{
 	char  name[128];         /* 変数名を格納する */
