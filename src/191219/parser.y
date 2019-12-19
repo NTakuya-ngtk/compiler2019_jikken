@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include "symbol.h"
 #include "symbol.c"
-#include "createLLVM.h"
-#include "createLLVM.c"
+#include "createllvm.h"
+#include "createllvm.c"
 
   extern int yylineno;
   extern char *yytext;
@@ -55,9 +55,9 @@ program
 					new.fname = "main";
 					
 					/* あとから決定される*/
-					// new->codes = NULL;
+					 new->codes = codehd;
 					/* あとから決定される */
-					//new->next = NULL;
+					new->next = NULL;
 					/*-----------------------------------------------------*/
 					
           }SEMICOLON outblock PERIOD{
@@ -224,6 +224,8 @@ factor
        | NUMBER{
 				 //定数引数をスタックへプッシュする
 				 Factor number;
+				 number.val = ($1);
+				 number.type = CONSTANT;
 				 factorpush($1);
          }
        | LPAREN expression RPAREN

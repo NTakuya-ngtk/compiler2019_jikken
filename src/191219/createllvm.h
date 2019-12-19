@@ -2,20 +2,11 @@
 #define _CREATELLVM_H
 
 
-typedef enum{
-	GLOBAL_VAR, /* 大域変数 */
-	LOCAL_VAR,  /* 局所変数 */
-	PROC_NAME,  /* 手続き  */
-  	CONSTANT    /* 定数   */
-	     
-} Scope;
-
-
 /* 引数を表す構造体 */
 typedef struct{
-	char  name[128];         /* 変数名を格納する */
-	int   rNum;         /*レジスタ番号を格納する*/
-	Scope type;         /* 大域変数,局所変数,手続き,定数の種別を格納する*/
+	char  vname[256];         /* 変数の場合は変数名*/
+	int   val;                /* 整数の場合はその値、変数の場合は割り当てたレジスタ番号*/
+	Scope type;                /* 変数（のレジスタ）か整数かの区別*/
 }Factor ;
 
 typedef struct{

@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "createllvm.h"
-#include "symbol.h"
 
 Factorstack fstack;  // 整数もしくはレジスタ番号を保持するスタック
 
@@ -13,7 +12,7 @@ void init_fstack(){
 
 Factor factorpop(){
 	Factor tmp;
-	tmp = fstack.element[fstack.top];
+	tmp = fstack.element[fstack.pop];
 	fstack.top --;
 	return tmp;
 }
