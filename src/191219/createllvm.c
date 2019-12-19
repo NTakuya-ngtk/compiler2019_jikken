@@ -75,41 +75,49 @@ void displayLLVMcodes(LLVMcode *code){
 
 	switch( code->command){
 		
-	  case Alloca:
+		case Alloca:
 			displayFactor((code->args).alloca.retval);
-			printf(" = alloca i32, align 4\n");
+			printf(" = ");
+			printf("alloca i32, align 4");
+			printf("\n");
 			break;
 
 		
-	  case Store:
+		case Store:
+			displayFactor((code->args).store.retval);
+			printf(" = ");
+			printf("store i32,");
+			displayFactor((code->args).store.arg1);
+			printf("i32* %d, align 4",((code->args).store.arg1.val));
+			printf("\n");
+
+			
+			break;
+
+
+		case Load:
+			displayFactor((code->args).load.retval);
+			printf(" = ");
+			printf("load i32, i32* %d, align 4",((code->args).load.arg1.val));
+			printf("\n");
+			
+			break;
+
+		case BrUncond:
+
 
 			//工事中//
 
 			
 			break;
 
-
-	  case Load:
-
-			//工事中//
-			
-			break;
-
-	  case BrUncond:
-
-
-			//工事中//
-
-			
-			break;
-
-	  case BrCond:
+	  	case BrCond:
 
 			//工事中//
 			
 			break;
 
-	  case Label:
+		case Label:
 
 			//工事中//
 			
@@ -117,7 +125,7 @@ void displayLLVMcodes(LLVMcode *code){
 			
 		case Add:
 			displayFactor((code->args).add.retval);
-			printf(" = add nsw i32 %d %d\n",(code->args).add.arg1,(code->args).add.arg2);
+			printf(" = add nsw i32 %d %d\n",(code->args).add.arg1.val,(code->args).add.arg2.val);
 			break;
 			
 		case Sub:
