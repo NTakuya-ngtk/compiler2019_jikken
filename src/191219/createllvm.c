@@ -102,11 +102,9 @@ void displayLLVMcodes(LLVMcode *code){
 			break;
 
 		case BrUncond:
+			printf("br label %d",((code->args).bruncond.arg1));
+			printf("\n");
 
-
-			//工事中//
-
-			
 			break;
 
 	  	case BrCond:
