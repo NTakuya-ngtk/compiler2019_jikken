@@ -34,20 +34,20 @@ typedef enum {
 } Cmptype;
 
 /*LLVM-IRの命令を表現する構造体*/
-// Factorって構造体？的なのだろうけど、どこで定義してる？
+// SymbolTableって構造体？的なのだろうけど、どこで定義してる？
 typedef struct llvmcode {
 	LLVMcommand command; //命令名
 	union {         // 命令の引数
 		struct {   //alloca
-			Factor retval;
+			SymbolTable retval;
 		}alloca;
 
 		struct {   //store
-			Factor arg1; Factor arg2;
+			SymbolTable arg1; SymbolTable arg2;
 		}store;
 
 		struct {   //load
-			Factor arg1; Factor retval;
+			SymbolTable arg1; SymbolTable retval;
 		}load;
 
 		struct {   //br
@@ -55,7 +55,7 @@ typedef struct llvmcode {
 		}bruncond;
 
 		struct {   //brc
-			Factor arg1;  int arg2;  int arg3;
+			SymbolTable arg1;  int arg2;  int arg3;
 		}brcond;
 
 		struct {   //label
@@ -63,19 +63,19 @@ typedef struct llvmcode {
 		}label;
 
 		struct {   //add
-			Factor arg1;  Factor arg2; Factor retval;
+			SymbolTable arg1;  SymbolTable arg2; SymbolTable retval;
 		}add;
 
 		struct {   //sub
-			Factor arg1; Factor arg2; Factor retval;
+			SymbolTable arg1; SymbolTable arg2; SymbolTable retval;
 		}sub;
 
 		struct {   //icmp
-			Cmptype type; Factor arg1; Factor arg2; Factor retval;
+			Cmptype type; SymbolTable arg1; SymbolTable arg2; SymbolTable retval;
 		}icmp;
 
 		struct {  //ret
-			Factor arg1;
+			SymbolTable arg1;
 		}ret;
 	}args;
 
