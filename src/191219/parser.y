@@ -8,11 +8,14 @@
 #include <stdio.h>
 #include "symbol.h"
 #include "symbol.c"
+#include "createLLVM.h"
+#include "createLLVM.c"
 
   extern int yylineno;
   extern char *yytext;
 
 	Scope flag = GLOBAL_VAR;
+	init_fstack();  // スタックの初期化を行う
 
 	
 %}
@@ -40,7 +43,26 @@
 %%
 
 program
-        : PROGRAM IDENT SEMICOLON outblock PERIOD
+        : PROGRAM IDENT {
+					/* 以下プログラム名からmain関数のLLVMコードを生成するCプログラム*/
+					Fundecl *new;
+					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリ確保
+					//最初の1つ目のプログラムであるため、hdもtlも初期化
+					declhd = new;   
+					decltl = new; 
+					new->next = NULL;
+					
+					new.fname = "main";
+					
+					/* あとから決定される*/
+					// new->codes = NULL;
+					/* あとから決定される */
+					//new->next = NULL;
+					/*-----------------------------------------------------*/
+					
+          }SEMICOLON outblock PERIOD{
+						displayLLVMfundecl(declhd);
+          }
         ;
 
 outblock
@@ -163,6 +185,31 @@ expression
        | PLUS term
        | MINUS term
        | expression PLUS term
+			 {
+				 /* 加算命令をLLVMコードとして生成するCプログラム */
+				 LLVMcode *tmp;            //生成した命令へのポインタ
+				 Factor arg1, arg2,retval; //加算の引数、結果
+				 memoryGet(*tmp);          //mallocによるメモリ確保
+				 //↑もしかしたら返り値として*tmpにしないといけないかもしれない
+
+				 tmp->command = Add;
+				 arg2 = factorpop();       //スタックから第2引数をポップ
+				 arg1 = factorpop();       //スタックから第1引数をポップ
+				 retval.type = LOCAL_VAR;  //結果を格納するレジスタは局所変数
+				 retval.val = cnrt;        // 新規のレジスタ番号を取得
+				 cnrt++;
+
+				 (tmp->args).add.arg1 = arg1;   /* 命令の第1引数を指定 */
+				 (tmp->args).add.arg2 = arg2;   /* 命令の第2引数を指定 */
+				 (tmp->args).add.retval = retval; /* 結果のレジスタを指定*/
+
+				 addList(*tmp);                /* 新規命令として、命令列へ追加する*/
+				 /* ↑もしかしら戻り値が何かしら必要かもしれない */
+				 
+				 factorpush( retval );       // 加算の結果をスタックへプッシュ
+
+				 /*-----------------------------------------*/
+			 }
        | expression MINUS term
        ;
 
@@ -174,12 +221,21 @@ term
 
 factor
        : var_name
-       | NUMBER
+       | NUMBER{
+				 //定数引数をスタックへプッシュする
+				 Factor number;
+				 factorpush($1);
+         }
        | LPAREN expression RPAREN
        ;
 
 var_name
-       : IDENT{ lookup($1);}
+       : IDENT{ lookup($1);}{
+				 //変数引数をスタックへプッシュする
+				 //
+				 //工事中
+				 //
+         }
        ;
 
 /*arg_list
