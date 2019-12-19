@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "createllvm.h"
 #include "symbol.h"
+#define FP stdout
 
 Factorstack fstack;  // 整数もしくはレジスタ番号を保持するスタック
 
@@ -51,13 +52,13 @@ void addList(LLVMcode *tmp){
 void displayFactor(Factor factor){
 	switch(factor.type){
 	  case GLOBAL_VAR:
-			printf("@%s", factor.vname);
+			fprintf(FP,"@%s", factor.vname);
 			break;
 	  case LOCAL_VAR:
-			printf("%%%d", factor.val);
+			fprintf(FP,"%%%d", factor.val);
 			break;
 	  case CONSTANT:
-			printf("%d",   factor.val);
+			fprintf(FP,"%d",   factor.val);
 			break;
 	  default:
 			break;
@@ -77,17 +78,17 @@ void displayLLVMcodes(LLVMcode *code){
 		
 		case Alloca:
 			displayFactor((code->args).alloca.retval);
-			printf(" = ");
-			printf("alloca i32, align 4");
-			printf("\n");
+			fprintf(FP," = ");
+			fprintf(FP,"alloca i32, align 4");
+			fprintf(FP,"\n");
 			break;
 
 		
 		case Store:
-			printf("store i32,");
+			fprintf(FP,"store i32,");
 			displayFactor((code->args).store.arg1);
-			printf("i32* %d, align 4",((code->args).store.arg1.val));
-			printf("\n");
+			fprintf(FP,"i32* %d, align 4",((code->args).store.arg1.val));
+			fprintf(FP,"\n");
 
 			
 			break;
@@ -95,21 +96,22 @@ void displayLLVMcodes(LLVMcode *code){
 
 		case Load:
 			displayFactor((code->args).load.retval);
-			printf(" = ");
-			printf("load i32, i32* %d, align 4",((code->args).load.arg1.val));
-			printf("\n");
+			fprintf(FP," = ");
+			fprintf(FP,"load i32, i32* %d, align 4",((code->args).load.arg1.val));
+			fprintf(FP,"\n");
 			
 			break;
 
 		case BrUncond:
-			printf("br label %d",((code->args).bruncond.arg1));
-			printf("\n");
+			fprintf(FP,"br label %d",((code->args).bruncond.arg1));
+			fprintf(FP,"\n");
 
 			break;
 
 	  	case BrCond:
-
-			//工事中//
+			fprintf(FP,"br i1");
+			displayFactor((code->args).brcond.arg1);
+			fprintf(FP,", label %d, label %d",(code->args).brcond.arg2,(code->args).brcond.arg3);
 			
 			break;
 
@@ -121,16 +123,16 @@ void displayLLVMcodes(LLVMcode *code){
 			
 		case Add: 
 			displayFactor((code->args).add.retval);
-			printf(" = ");
-			printf("add nsw i32 %d %d",(code->args).add.arg1.val,(code->args).add.arg2.val);
-			printf("\n");
+			fprintf(FP," = ");
+			fprintf(FP,"add nsw i32 %d %d",(code->args).add.arg1.val,(code->args).add.arg2.val);
+			fprintf(FP,"\n");
 			break;
 			
 		case Sub:
 			displayFactor((code->args).sub.retval);
-			printf(" = ");
-			printf("sub nsw i32 %d %d",(code->args).sub.arg1.val,(code->args).sub.arg2.val);
-			printf("\n");
+			fprintf(FP," = ");
+			fprintf(FP,"sub nsw i32 %d %d",(code->args).sub.arg1.val,(code->args).sub.arg2.val);
+			fprintf(FP,"\n");
 			break;
 
 
@@ -167,12 +169,12 @@ void displayLLVMfundecl(Fundecl *decl){
 		return;
 	}
 
-	printf("define i32 @%s() {\n", decl->fname);
+	fprintf(FP,"define i32 @%s() {\n", decl->fname);
 	displayLLVMcodes(decl->codes);
-	printf("}\n");
+	fprintf(FP,"}\n");
 
 	if(decl->next != NULL){
-	  printf("\n");
+	  fprintf("FP,\n");
 		displayLLVMfundecl(decl->next);// 再帰的に呼び出して、リストを全て出力する
    }
   return;
