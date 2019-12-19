@@ -23,7 +23,7 @@ void insert(char *NewName,Scope NewType){
 	new->type = NewType;
 	root = new;
 	
-	printf("InsertData:%s,%d,%d\n",new->name,new->rNum,new->type);
+//	printf("InsertData:%s,%d,%d\n",new->name,new->rNum,new->type);
 
 	//return(void);
 }
@@ -40,7 +40,7 @@ void lookup(char *SearchName){
 	while(1){
 		
 		if(strcmp(temp->name,SearchName)==0){
-			printf("VarName:%s,VarType:%d\n",temp->name,temp->type);
+//			printf("VarName:%s,VarType:%d\n",temp->name,temp->type);
 			return;
 		}
 		if(temp->next == NULL){
@@ -60,7 +60,7 @@ void delete(){
 		rec = root->next;
 		if(rec->type == (Scope)(PROC_NAME)){
 			root->next = rec;
-			printf("Deleted until %s\n",rec->name);
+//			printf("Deleted until %s\n",rec->name);
 			break;														 
 		}else{
 			root->next = rec->next;
