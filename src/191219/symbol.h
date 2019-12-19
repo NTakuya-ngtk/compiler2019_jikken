@@ -33,6 +33,59 @@ typedef enum {
 	SLE /* sle （<=，符号付き）*/
 } Cmptype;
 
+/*LLVM-IRの命令を表現する構造体*/
+// Factorって構造体？的なのだろうけど、どこで定義してる？
+typedef struct llvmcode {
+	LLVMcommand command; //命令名
+	union {         // 命令の引数
+		struct {   //alloca
+			Factor retval;
+		}alloca;
+
+		struct {   //store
+			Factor arg1; Factor arg2;
+		}store;
+
+		struct {   //load
+			Factor arg1; Factor retval;
+		}load;
+
+		struct {   //br
+			int arg1;
+		}bruncond;
+
+		struct {   //brc
+			Factor arg1;  int arg2;  int arg3;
+		}brcond;
+
+		struct {   //label
+			int l;
+		}label;
+
+		struct {   //add
+			Factor arg1;  Factor arg2; Factor retval;
+		}add;
+
+		struct {   //sub
+			Factor arg1; Factor arg2; Factor retval;
+		}sub;
+
+		struct {   //icmp
+			Cmptype type; Factor arg1; Factor arg2; Factor retval;
+		}icmp;
+
+		struct {  //ret
+			Factor arg1;
+		}ret;
+	}args;
+
+	struct llvmcode *next;  // 次の命令へのポインタ
+}LLVMcode;
+
+LLVMcode *codehd = NULL;  // 命令列の先頭のアドレスを保持するポインタ
+LLVMcode *codetl = NULL;  // 命令列の末尾のアドレスを保持するポインタ
+			
+
 
 /* 構造体で記号表の線形リストを実現する */
 typedef struct{
