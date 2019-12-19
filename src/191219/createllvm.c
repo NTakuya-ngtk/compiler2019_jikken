@@ -84,8 +84,6 @@ void displayLLVMcodes(LLVMcode *code){
 
 		
 		case Store:
-			displayFactor((code->args).store.retval);
-			printf(" = ");
 			printf("store i32,");
 			displayFactor((code->args).store.arg1);
 			printf("i32* %d, align 4",((code->args).store.arg1.val));
@@ -125,13 +123,16 @@ void displayLLVMcodes(LLVMcode *code){
 			
 		case Add:
 			displayFactor((code->args).add.retval);
-			printf(" = add nsw i32 %d %d\n",(code->args).add.arg1.val,(code->args).add.arg2.val);
+			printf(" = ");
+			printf("add nsw i32 %d %d",(code->args).add.arg1.val,(code->args).add.arg2.val);
+			printf("\n");
 			break;
 			
 		case Sub:
-
-			//工事中//
-			
+			displayFactor((code->args).sub.retval);
+			printf(" = ");
+			printf("sub nsw i32 %d %d",(code->args).sub.arg1.val,(code->args).sub.arg2.val);
+			printf("\n");
 			break;
 			
 		case Icmp:
