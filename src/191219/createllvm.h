@@ -26,7 +26,7 @@ typedef enum{
 	Add,       /* add    */
 	Sub,       /* sub    */
 	Mul,	  /* mul    */
-	SDiv,		/* sdiv    */
+	Div,		/* sdiv    */
 	Icmp,      /* icmp   */
 	Ret       /* ret    */     
 } LLVMcommand;

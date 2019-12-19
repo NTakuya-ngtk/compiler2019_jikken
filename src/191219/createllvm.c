@@ -143,7 +143,7 @@ void displayLLVMcodes(LLVMcode *code){
 			fprintf(FP,"\n");
 			break;
 
-		case SDiv:
+		case Div:
 			displayFactor((code->args).sdiv.retval);
 			fprintf(FP," = ");
 			fprintf(FP,"sdiv i32 %d %d",(code->args).sdiv.arg1.val,(code->args).sdiv.arg2.val);
@@ -182,7 +182,7 @@ void displayLLVMfundecl(Fundecl *decl){
 	fprintf(FP,"}\n");
 
 	if(decl->next != NULL){
-	  fprintf("FP,\n");
+	  fprintf(FP,"\n");
 		displayLLVMfundecl(decl->next);// 再帰的に呼び出して、リストを全て出力する
    }
   return;
