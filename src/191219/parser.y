@@ -107,7 +107,7 @@ proc_name
        ;
 
 inblock
-       :  {flag = LOCAL_VAR;} var_decl_part statement
+       : { flag = LOCAL_VAR; } var_decl_part statement /*flagを変更する*/
        ;
 
 statement_list
@@ -188,10 +188,9 @@ expression
        | expression PLUS term
 			 {
 				 /* 加算命令をLLVMコードとして生成するCプログラム */
-				 LLVMcode *tmp;            //生成した命令へのポインタ
-				 Factor arg1, arg2,retval; //加算の引数、結果
+				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
+				 Factor arg1, arg2,retval; 　　//加算の引数、結果
 				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
-				 //↑もしかしたら返り値として*tmpにしないといけないかもしれない
 
 				 tmp->command = Add;
 				 arg2 = factorpop();       //スタックから第2引数をポップ
@@ -205,39 +204,116 @@ expression
 				 (tmp->args).add.retval = retval; /* 結果のレジスタを指定*/
 
 				 addList(tmp);                /* 新規命令として、命令列へ追加する*/
-				 /* ↑もしかしら戻り値が何かしら必要かもしれない */
 				 
 				 factorpush( retval );       // 加算の結果をスタックへプッシュ
 
 				 /*-----------------------------------------*/
 			 }
        | expression MINUS term
+                     {
+                            
+                            /* 減算命令をLLVMコードとして生成するCプログラム */
+				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
+				 Factor arg1, arg2,retval; 　　//減算の引数、結果
+				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
+
+				 tmp->command = Sub;
+				 arg2 = factorpop();       //スタックから第2引数をポップ
+				 arg1 = factorpop();       //スタックから第1引数をポップ
+				 retval.type = LOCAL_VAR;  //結果を格納するレジスタは局所変数
+				 retval.val = cnrt;        // 新規のレジスタ番号を取得
+				 cnrt++;
+
+				 (tmp->args).add.arg1 = arg1;   /* 命令の第1引数を指定 */
+				 (tmp->args).add.arg2 = arg2;   /* 命令の第2引数を指定 */
+				 (tmp->args).add.retval = retval; /* 結果のレジスタを指定*/
+
+				 addList(tmp);                /* 新規命令として、命令列へ追加する*/
+				 
+				 factorpush( retval );       // 減算の結果をスタックへプッシュ
+
+				 /*-----------------------------------------*/
+
+                     }
        ;
 
 term
        : factor
        | term MULT factor
-       | term DIV factor
+                     {
+                            /* 乗算命令をLLVMコードとして生成するCプログラム */
+				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
+				 Factor arg1, arg2,retval; 　　//乗算の引数、結果
+				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
+
+				 tmp->command = Mul;
+				 arg2 = factorpop();       //スタックから第2引数をポップ
+				 arg1 = factorpop();       //スタックから第1引数をポップ
+				 retval.type = LOCAL_VAR;  //結果を格納するレジスタは局所変数
+				 retval.val = cnrt;        // 新規のレジスタ番号を取得
+				 cnrt++;
+
+				 (tmp->args).add.arg1 = arg1;   /* 命令の第1引数を指定 */
+				 (tmp->args).add.arg2 = arg2;   /* 命令の第2引数を指定 */
+				 (tmp->args).add.retval = retval; /* 結果のレジスタを指定*/
+
+				 addList(tmp);                /* 新規命令として、命令列へ追加する*/
+				 
+				 factorpush( retval );       // 乗算の結果をスタックへプッシュ
+
+				 /*-----------------------------------------*/
+                     }
+       | term DIV factor    
+                     {
+                            /* 除算命令をLLVMコードとして生成するCプログラム */
+				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
+				 Factor arg1, arg2,retval; 　　//除算の引数、結果
+				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
+
+				 tmp->command = Div;
+				 arg2 = factorpop();       //スタックから第2引数をポップ
+				 arg1 = factorpop();       //スタックから第1引数をポップ
+				 retval.type = LOCAL_VAR;  //結果を格納するレジスタは局所変数
+				 retval.val = cnrt;        // 新規のレジスタ番号を取得
+				 cnrt++;
+
+				 (tmp->args).add.arg1 = arg1;   /* 命令の第1引数を指定 */
+				 (tmp->args).add.arg2 = arg2;   /* 命令の第2引数を指定 */
+				 (tmp->args).add.retval = retval; /* 結果のレジスタを指定*/
+
+				 addList(tmp);                /* 新規命令として、命令列へ追加する*/
+				 
+				 factorpush( retval );       // 除算の結果をスタックへプッシュ
+
+				 /*-----------------------------------------*/
+                     }
        ;
 
 factor
        : var_name
        | NUMBER {
-				 //定数引数をスタックへプッシュする
+				 /*定数引数をスタックへプッシュする*/
+
 				 Factor number;
 				 number.val = ($1);
 				 number.type = CONSTANT;
 				 factorpush(number);
+                             /*----------------------------*/
          }
        | LPAREN expression RPAREN
        ;
 
 var_name
        : IDENT { lookup($1);}{
-				 //変数引数をスタックへプッシュする
-				 //
-				 //工事中
-				 //
+				 /*変数引数をスタックへプッシュする*/
+
+				 Factor var;
+                             strcpy(var.vname,$1);
+                             var.val = cnrt;
+                             cnrt++;
+                             var.type = LOCAL_VAR; //本当にこれでいいの?
+                             factorpush(var);
+                             /*----------------------------*/
          }
        ;
 

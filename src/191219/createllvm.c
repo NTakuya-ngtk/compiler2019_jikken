@@ -112,34 +112,42 @@ void displayLLVMcodes(LLVMcode *code){
 			fprintf(FP,"br i1");
 			displayFactor((code->args).brcond.arg1);
 			fprintf(FP,", label %d, label %d",(code->args).brcond.arg2,(code->args).brcond.arg3);
-			
+			fprintf(FP,"\n");
 			break;
 
 		case Label:
+			fprintf(FP,"; <label>:%d:",(code->args).label.l);
+			fprintf(FP,"\n");
 
-			//工事中//
-			
 			break;
 			
 		case Add: 
 			displayFactor((code->args).add.retval);
 			fprintf(FP," = ");
-			fprintf(FP,"add nsw i32 %d %d",(code->args).add.arg1.val,(code->args).add.arg2.val);
+			fprintf(FP,"add nsw i32 %d, %d",(code->args).add.arg1.val,(code->args).add.arg2.val);
 			fprintf(FP,"\n");
 			break;
 			
 		case Sub:
 			displayFactor((code->args).sub.retval);
 			fprintf(FP," = ");
-			fprintf(FP,"sub nsw i32 %d %d",(code->args).sub.arg1.val,(code->args).sub.arg2.val);
+			fprintf(FP,"sub nsw i32 %d, %d",(code->args).sub.arg1.val,(code->args).sub.arg2.val);
 			fprintf(FP,"\n");
 			break;
 
 
 		case Mul:
+			displayFactor((code->args).mul.retval);
+			fprintf(FP," = ");
+			fprintf(FP,"mul nsw i32 %d, %d",(code->args).mul.arg1.val,(code->args).mul.arg2.val);
+			fprintf(FP,"\n");
 			break;
 
-		case SDiv:
+		case Div:
+			displayFactor((code->args).sdiv.retval);
+			fprintf(FP," = ");
+			fprintf(FP,"sdiv i32 %d, %d",(code->args).sdiv.arg1.val,(code->args).sdiv.arg2.val);
+			fprintf(FP,"\n");
 			break;
 			
 		case Icmp:
@@ -174,7 +182,7 @@ void displayLLVMfundecl(Fundecl *decl){
 	fprintf(FP,"}\n");
 
 	if(decl->next != NULL){
-	  fprintf("FP,\n");
+	  fprintf(FP,"\n");
 		displayLLVMfundecl(decl->next);// 再帰的に呼び出して、リストを全て出力する
    }
   return;
