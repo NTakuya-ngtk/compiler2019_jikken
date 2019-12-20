@@ -128,7 +128,19 @@ statement
        ;
 
 assignment_statement
-       : IDENT {lookup($1);} ASSIGN expression
+       : IDENT {lookup($1);} ASSIGN expression {
+                            /*変数引数をスタックへプッシュする*/
+                             LLVMcode* tmp;
+                             Factor arg1,arg2;
+                             tmp = memoryGet(tmp); 
+
+                             tmp->command=Store;
+
+                             arg1 = factorpop();
+                             arg2 = factorpop();
+                             
+                             /*----------------------------*/
+       }
        ;
 
 if_statement
@@ -305,14 +317,21 @@ factor
 
 var_name
        : IDENT { lookup($1);}{
+                            
 				 /*変数引数をスタックへプッシュする*/
+                             LLVMcode* tmp;
+                             Factor arg1,arg2;
+                             tmp = memoryGet(tmp); 
 
-				 Factor var;
+                             tmp->command=Load;
+
+                             Factor var;
                              strcpy(var.vname,$1);
                              var.val = cnrt;
                              cnrt++;
                              var.type = LOCAL_VAR; //本当にこれでいいの?
                              factorpush(var);
+				 
                              /*----------------------------*/
          }
        ;

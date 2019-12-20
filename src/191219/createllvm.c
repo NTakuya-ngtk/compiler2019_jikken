@@ -87,12 +87,10 @@ void displayLLVMcodes(LLVMcode *code){
 		case Store:
 			fprintf(FP,"store i32,");
 			displayFactor((code->args).store.arg1);
-			fprintf(FP,"i32* %d, align 4",((code->args).store.arg1.val));
+			fprintf(FP,"i32* %d, align 4",((code->args).store.arg1.val)); // ここdisplayFactorへ書き換える
 			fprintf(FP,"\n");
-
 			
 			break;
-
 
 		case Load:
 			displayFactor((code->args).load.retval);
