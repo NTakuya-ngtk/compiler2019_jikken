@@ -92,8 +92,8 @@ subprog_decl_part
 
 subprog_decl_list
         : subprog_decl_list SEMICOLON subprog_decl
-				| subprog_decl
-				;
+	| subprog_decl
+	;
 
 subprog_decl
         : proc_decl
@@ -130,29 +130,30 @@ statement
 
 assignment_statement
        : IDENT {lookup($1);} ASSIGN expression {
+                            /*変数引数をスタックからpopしてレジスタへ格納する ｜Store*/
 
-                            /*変数引数をスタックへプッシュする | Load*/
                              LLVMcode* tmp;
-                             Factor arg1,retval;
+                             Factor arg1,arg2;
                              tmp = memoryGet(tmp); 
 
-                             tmp->command=Load;
-                             
-                             arg1 = factorpop();
+                             tmp->command=Store;
 
-                             strcpy(retval.vname,$1);
-                             retval.type = flag;
-                             retval.val = cnrt;
+                             arg1 = factorpop(); 
+                             
+                             strcpy(arg2,$1);
+                             arg2.type = flag;
+                             arg2.val = cnrt;
                              cnrt++;
 
-                             (tmp->args).load.arg1 = arg1;
-                             (tmp->args).load.retval = retval;
+                             (tmp->args).store.arg1 = arg1;
+                             (tmp->args).store.arg2 = arg2;
 
                              addList(tmp);
                              
-                             factorpush(retval);
-				 
                              /*----------------------------*/
+                            }
+
+                            
          }
        ;
 
@@ -331,24 +332,31 @@ factor
 var_name
        : IDENT { lookup($1);}
 
-                            { /*変数引数をスタックからpopする ｜Store*/
-
+                            { 
+                                   
+                             /*引数をスタック からポップして，新引数をレジスタへ格納後スタック へプッシュする | Load*/
                              LLVMcode* tmp;
-                             Factor arg1,arg2;
+                             Factor arg1,retval;
                              tmp = memoryGet(tmp); 
 
-                             tmp->command=Store;
+                             tmp->command=Load;
+                             
+                             arg1 = factorpop();
 
-                             arg1 = factorpop(); // arg1と2入れ替えた方がいい？ スタックにまず変数名が入って，その後に引数が入ると考えられるため．
-                             arg2 = factorpop();
+                             strcpy(retval.vname,$1);
+                             retval.type = flag;
+                             retval.val = cnrt;
+                             cnrt++;
 
-                             (tmp->args).store.arg1 = arg1;
-                             (tmp->args).store.arg2 = arg2;
+                             (tmp->args).load.arg1 = arg1;
+                             (tmp->args).load.retval = retval;
 
                              addList(tmp);
                              
+                             factorpush(retval);
+				 
                              /*----------------------------*/
-                            }
+                                   
                             
 				 
        ;
