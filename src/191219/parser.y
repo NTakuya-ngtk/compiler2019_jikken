@@ -45,7 +45,8 @@
 
 program
         : PROGRAM IDENT {
-					/* 以下プログラム名からmain関数のLLVMコードを生成するCプログラム*/
+					//ここではないのでprogramミスっている．
+                                   /* 以下プログラム名からmain関数のLLVMコードを生成するCプログラム*/
 					Fundecl *new;
 					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリ確保
 					/* 最初の1つ目のプログラムであるため、hdもtlも初期化 */
@@ -129,32 +130,32 @@ statement
        ;
 
 assignment_statement
-       : IDENT {lookup($1);} ASSIGN expression {
-                            /*変数引数をスタックからpopしてレジスタへ格納する ｜Store*/
+       : IDENT {lookup($1);} ASSIGN expression
+                             {
+                                   /*変数引数をスタックからpopしてレジスタへ格納する ｜Store*/
 
-                             LLVMcode* tmp;
-                             Factor arg1,arg2;
-                             tmp = memoryGet(tmp); 
+                                   LLVMcode* tmp;
+                                   Factor arg1,arg2;
 
-                             tmp->command=Store;
+                                   tmp = memoryGet(tmp); 
 
-                             arg1 = factorpop(); 
-                             
-                             strcpy(arg2,$1);
-                             arg2.type = flag;
-                             arg2.val = cnrt;
-                             cnrt++;
+                                   tmp->command=Store;
 
-                             (tmp->args).store.arg1 = arg1;
-                             (tmp->args).store.arg2 = arg2;
+                                   arg1 = factorpop(); 
+                                   
+                                   strcpy(arg2.vname,$1);
+                                   arg2.type = flag;
+                                   arg2.val = cnrt;
+                                   cnrt++;
 
-                             addList(tmp);
-                             
-                             /*----------------------------*/
+                                   (tmp->args).store.arg1 = arg1;
+                                   (tmp->args).store.arg2 = arg2;
+
+                                   addList(tmp);
+                                   
+                                   /*----------------------------*/
                             }
 
-                            
-         }
        ;
 
 if_statement
@@ -343,7 +344,6 @@ var_name
                              
                              arg1 = factorpop();
 
-                             strcpy(retval.vname,$1);
                              retval.type = flag;
                              retval.val = cnrt;
                              cnrt++;
@@ -356,6 +356,7 @@ var_name
                              factorpush(retval);
 				 
                              /*----------------------------*/
+                            }
                                    
                             
 				 
@@ -367,8 +368,89 @@ var_name
        ;
 */
 id_list
-       : IDENT { insert($1,flag);}
-       | id_list COMMA IDENT {insert($3,flag);}
+       : IDENT { insert($1,flag);} {
+                            {
+       
+                                   /*変数を宣言する｜alloca*/
+
+                                   LLVMcode* tmp;
+                                   Factor retval;
+                                   
+                                   tmp = memoryGet(tmp); 
+                                   switch(flag){
+                                          case LOCAL_VAR:
+                                                 tmp->command=Alloca;
+                                                 break;
+                                          case GLOBAL_VAR:
+                                                 tmp->command=Global;
+                                                 break;
+                                          default:
+                                                 break;
+                                   }
+
+                                   strcpy(retval.vname,$1);
+                                   retval.type = flag;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                    switch(flag){
+                                          case LOCAL_VAR:
+                                                 (tmp->args).alloca.retval = retval;
+                                                 break;
+                                          case GLOBAL_VAR:
+                                                 (tmp->args).global.retval = retval;
+                                                 break;
+                                          default:
+                                                 break;
+                                    }
+                                   addList(tmp);
+                                   
+                                   factorpush(retval);
+
+                                   /*----------------------------*/
+                            }
+
+       }
+       | id_list COMMA IDENT {insert($3,flag);} {
+
+       
+                                   /*変数を宣言する｜alloca*/
+
+                                   LLVMcode* tmp;
+                                   Factor retval;
+                                   
+                                   tmp = memoryGet(tmp); 
+                                   switch(flag){
+                                          case LOCAL_VAR:
+                                                 tmp->command=Alloca;
+                                                 break;
+                                          case GLOBAL_VAR:
+                                                 tmp->command=Global;
+                                                 break;
+                                          default:
+                                                 break;
+                                   }      
+                                   strcpy(retval.vname,$3);
+                                   retval.type = flag;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                    switch(flag){
+                                          case LOCAL_VAR:
+                                                 (tmp->args).alloca.retval = retval;
+                                                 break;
+                                          case GLOBAL_VAR:
+                                                 (tmp->args).global.retval = retval;
+                                                 break;
+                                          default:
+                                                 break;
+                                    }
+                                   addList(tmp);
+                                   
+                                   factorpush(retval);
+
+                                   /*----------------------------*/
+                            }
        ;
 
 %%

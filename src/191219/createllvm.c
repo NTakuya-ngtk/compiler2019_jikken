@@ -83,11 +83,20 @@ void displayLLVMcodes(LLVMcode *code){
 			fprintf(FP,"\n");
 			break;
 
+		case Global:
+			displayFactor((code->args).global.retval);
+			fprintf(FP," = ");
+			fprintf(FP,"common global i32 0, align 4");
+			fprintf(FP,"\n");
+			break;
+
 		
 		case Store:
-			fprintf(FP,"store i32,");
+			fprintf(FP,"store i32 ");
 			displayFactor((code->args).store.arg1);
-			fprintf(FP,"i32* %d, align 4",((code->args).store.arg1.val)); // ここdisplayFactorへ書き換える
+			fprintf(FP," ,i32* ");
+			displayFactor((code->args).store.arg2);
+			fprintf(FP,", align 4"); 
 			fprintf(FP,"\n");
 			
 			break;
@@ -95,7 +104,9 @@ void displayLLVMcodes(LLVMcode *code){
 		case Load:
 			displayFactor((code->args).load.retval);
 			fprintf(FP," = ");
-			fprintf(FP,"load i32, i32* %d, align 4",((code->args).load.arg1.val));
+			fprintf(FP,"load i32, i32* ");
+			displayFactor(((code->args).load.arg1));
+			fprintf(FP, ", align 4"); // ここdisplayFactorへ書き換える
 			fprintf(FP,"\n");
 			
 			break;

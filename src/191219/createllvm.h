@@ -18,6 +18,7 @@ typedef struct{
 /* LLVM 命令の種類 */
 typedef enum{
 	Alloca,   /* alloca */
+	Global,   /* global*/
 	Store,    /* Store */
 	Load,     /* Load  */
 	BrUncond, /*  br   */
@@ -48,6 +49,10 @@ typedef struct llvmcode {
 		struct {   //alloca
 			Factor retval;
 		}alloca;
+
+		struct {   //global
+			Factor retval;
+		}global;
 
 		struct {   //store
 			Factor arg1; Factor arg2;
