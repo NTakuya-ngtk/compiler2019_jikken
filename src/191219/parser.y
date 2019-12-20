@@ -77,12 +77,13 @@ var_decl_part
 
 var_decl_list
         : var_decl_list SEMICOLON var_decl
-				| var_decl
-				;
+	 | var_decl
+	 ;
 
 var_decl
-        :VAR id_list
-				;
+        :VAR id_list {
+        }
+	 ;
 
 subprog_decl_part
         : /* empty */
@@ -129,18 +130,30 @@ statement
 
 assignment_statement
        : IDENT {lookup($1);} ASSIGN expression {
-                            /*変数引数をスタックへプッシュする*/
+
+                            /*変数引数をスタックへプッシュする | Load*/
                              LLVMcode* tmp;
-                             Factor arg1,arg2;
+                             Factor arg1,retval;
                              tmp = memoryGet(tmp); 
 
-                             tmp->command=Store;
-
-                             arg1 = factorpop();
-                             arg2 = factorpop();
+                             tmp->command=Load;
                              
+                             arg1 = factorpop();
+
+                             strcpy(retval.vname,$1);
+                             retval.type = flag;
+                             retval.val = cnrt;
+                             cnrt++;
+
+                             (tmp->args).load.arg1 = arg1;
+                             (tmp->args).load.retval = retval;
+
+                             addList(tmp);
+                             
+                             factorpush(retval);
+				 
                              /*----------------------------*/
-       }
+         }
        ;
 
 if_statement
@@ -316,24 +329,28 @@ factor
        ;
 
 var_name
-       : IDENT { lookup($1);}{
-                            
-				 /*変数引数をスタックへプッシュする*/
+       : IDENT { lookup($1);}
+
+                            { /*変数引数をスタックからpopする ｜Store*/
+
                              LLVMcode* tmp;
                              Factor arg1,arg2;
                              tmp = memoryGet(tmp); 
 
-                             tmp->command=Load;
+                             tmp->command=Store;
 
-                             Factor var;
-                             strcpy(var.vname,$1);
-                             var.val = cnrt;
-                             cnrt++;
-                             var.type = LOCAL_VAR; //本当にこれでいいの?
-                             factorpush(var);
-				 
+                             arg1 = factorpop(); // arg1と2入れ替えた方がいい？ スタックにまず変数名が入って，その後に引数が入ると考えられるため．
+                             arg2 = factorpop();
+
+                             (tmp->args).store.arg1 = arg1;
+                             (tmp->args).store.arg2 = arg2;
+
+                             addList(tmp);
+                             
                              /*----------------------------*/
-         }
+                            }
+                            
+				 
        ;
 
 /*arg_list
