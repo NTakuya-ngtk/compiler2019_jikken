@@ -45,7 +45,8 @@
 
 program
         : PROGRAM IDENT {
-					//ここではないのでprogramミスっている．
+					// ここではないのでprogramミスっている．
+                                   // 正しい，programの場所を探す必要がある．
                                    /* 以下プログラム名からmain関数のLLVMコードを生成するCプログラム*/
 					Fundecl *new;
 					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリ確保
