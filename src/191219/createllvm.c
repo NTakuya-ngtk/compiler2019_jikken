@@ -106,7 +106,7 @@ void displayLLVMcodes(LLVMcode *code){
 			fprintf(FP," = ");
 			fprintf(FP,"load i32, i32* ");
 			displayFactor(((code->args).load.arg1));
-			fprintf(FP, ", align 4"); // ここdisplayFactorへ書き換える
+			fprintf(FP, ", align 4"); 
 			fprintf(FP,"\n");
 			
 			break;
