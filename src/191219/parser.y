@@ -45,7 +45,8 @@
 
 program
         : PROGRAM IDENT SEMICOLON outblock PERIOD {
-						displayLLVMfundecl(declhd);
+
+		displayLLVMfundecl(declhd);
           }
         ;
 
@@ -89,21 +90,31 @@ proc_decl
 proc_name
        : IDENT {flag = PROC_NAME; insert($1,flag);}  {
 					
-                                   // 正しい，programの場所を探す必要がある．
+                                  /*-----------------------------------------------------*/
+
+
                                    /* 以下プログラム名から関数のLLVMコードを生成するCプログラム*/
 					Fundecl *new;
-                                   Factor *retval;
-					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリ確保
-					
-                                   /* 関数を保管する線形リストの最新のもののため，ポインタを更新 */
-					decltl = new;
+					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
 					
                                    // 関数名等を保存
 					strcpy(new->fname,$1);
-					
-                                   
+
+                                    /* 線形リストのポインタを更新 */
+
+                                   if(decltl == NULL){  /* 関数定義の線形リストの最初であるとき*/
+                                          declhd = decltl = new;
+                                   } else {             /* 関数定義の線形リストに1つ以上存在する時*/
+                                          decltl->next = new;  // 関数定義列の末尾に*newを追加
+                                          decltl = new;        // 関数定義列の末尾として*newを保存する
+
+                                   };
+
+                                   /* ポインタの付け替え */
 					new->codes = codehd;
 					new->next = NULL;
+					
+                                   
 
 					/*-----------------------------------------------------*/
 					
@@ -186,7 +197,11 @@ proc_call_name
        ;
 
 block_statement
-       : SBEGIN statement_list SEND
+       : SBEGIN {
+                     /* ここが，ブロックのはじめであるため，関数の書き出しを行うなら，ここであると考えらえれる*/
+
+       }
+       statement_list SEND
        ;
 
 read_statement

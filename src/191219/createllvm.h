@@ -105,7 +105,7 @@ typedef struct llvmcode {
 typedef struct fundecl {
 	char fname[256];      //関数名
 	unsigned arity;       //引数個数
-	Factor args[10]; //引数名
+	Factor args[10];      //引数名
 	LLVMcode *codes;      //命令列への線形ポインタ
 	struct fundecl *next; //次の関数定義へのポインタ
 }Fundecl;
