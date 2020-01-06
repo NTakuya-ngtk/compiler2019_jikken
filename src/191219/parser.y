@@ -44,26 +44,7 @@
 %%
 
 program
-        : PROGRAM IDENT {
-					// ここではないのでprogramミスっている．
-                                   // 正しい，programの場所を探す必要がある．
-                                   /* 以下プログラム名からmain関数のLLVMコードを生成するCプログラム*/
-					Fundecl *new;
-					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリ確保
-					/* 最初の1つ目のプログラムであるため、hdもtlも初期化 */
-					declhd = new;   
-					decltl = new; 
-					new->next = NULL;
-					
-					strcpy(new->fname,"main");
-					
-					/* あとから決定される*/
-					//new->codes = codehd;
-					/* あとから決定される */
-					new->next = NULL;
-					/*-----------------------------------------------------*/
-					
-          }SEMICOLON outblock PERIOD{
+        : PROGRAM IDENT SEMICOLON outblock PERIOD {
 						displayLLVMfundecl(declhd);
           }
         ;
@@ -106,7 +87,27 @@ proc_decl
        ;
 
 proc_name
-       : IDENT {flag = PROC_NAME; insert($1,flag);}
+       : IDENT {flag = PROC_NAME; insert($1,flag);}  {
+					
+                                   // 正しい，programの場所を探す必要がある．
+                                   /* 以下プログラム名から関数のLLVMコードを生成するCプログラム*/
+					Fundecl *new;
+                                   Factor *retval;
+					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリ確保
+					
+                                   /* 関数を保管する線形リストの最新のもののため，ポインタを更新 */
+					decltl = new;
+					
+                                   // 関数名等を保存
+					strcpy(new->fname,$1);
+					
+                                   
+					new->codes = codehd;
+					new->next = NULL;
+
+					/*-----------------------------------------------------*/
+					
+          }
        ;
 
 inblock
