@@ -161,6 +161,8 @@ assignment_statement
                                    arg2.val = cnrt;
                                    cnrt++;
 
+                                   factorpush(arg2);
+
                                    (tmp->args).store.arg1 = arg1;
                                    (tmp->args).store.arg2 = arg2;
 

@@ -94,7 +94,7 @@ void displayLLVMcodes(LLVMcode *code){
 		case Store:
 			fprintf(FP,"store i32 ");
 			displayFactor((code->args).store.arg1);
-			fprintf(FP," ,i32* ");
+			fprintf(FP,", i32* ");
 			displayFactor((code->args).store.arg2);
 			fprintf(FP,", align 4"); 
 			fprintf(FP,"\n");
