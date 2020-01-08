@@ -102,7 +102,8 @@ proc_name
                                    */
 					Fundecl *new;
 					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
-					
+					new->next = NULL;
+
                                    // 関数名等を保存
 					strcpy(new->fname,$1);
 
@@ -115,12 +116,7 @@ proc_name
                                           decltl = new;        // 関数定義列の末尾として*newを保存する
 
                                    };
-
-                                   /* ポインタの付け替え */
-					new->codes = codehd;
-					new->next = NULL;
 					
-                                   
 
 					/*-----------------------------------------------------*/
 					
