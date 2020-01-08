@@ -94,6 +94,12 @@ proc_name
 
 
                                    /* 以下プログラム名から関数のLLVMコードを生成するCプログラム*/
+                                   /* 関数のポインタをスタック で用意し，topからLLVMコードへの接続を
+                                   けして，2つめにmain関数を入れる．
+                                   or
+                                      関数のポインタが始まる1つ前に，factorクラスからllvmコードから出力させ，
+                                      帯域変数が正しくLLCMコードとして出力される状態を目指す．
+                                   */
 					Fundecl *new;
 					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
 					
