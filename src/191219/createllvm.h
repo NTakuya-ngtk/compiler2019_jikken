@@ -110,6 +110,7 @@ typedef struct fundecl {
 	struct fundecl *next; //次の関数定義へのポインタ
 }Fundecl;
 
+char programName[20];     // programの名前を格納する大域変数
 
 LLVMcode *codehd = NULL;  // 命令列の先頭のアドレスを保持するポインタ
 LLVMcode *codetl = NULL;  // 命令列の末尾のアドレスを保持するポインタ
