@@ -62,13 +62,15 @@ program
 
                                     /* 線形リストのポインタを更新 */
 
-                                   if(decltl == NULL){  /* 関数定義の線形リストの最初であるとき*/
+                                   if(decltl == NULL) {   /* 関数定義の線形リストの最初であるとき*/
                                           declhd = decltl = new;
-                                    } else {             /* 関数定義の線形リストに1つ以上存在する時*/
+                                   } else {             /* 関数定義の線形リストに1つ以上存在する時*/
                                           decltl->next = new;  // 関数定義列の末尾に*newを追加
                                           decltl = new;        // 関数定義列の末尾として*newを保存する
+                                   }
 
-                                   };
+                                   codetl = NULL;
+
 					
 
 					/*-----------------------------------------------------*/
@@ -268,6 +270,7 @@ expression
        | PLUS term
        | MINUS term
        | expression PLUS term
+
 			 {
 				 /* 加算命令をLLVMコードとして生成するCプログラム */
 				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
