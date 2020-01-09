@@ -44,11 +44,20 @@
 %%
 
 program
-        : PROGRAM IDENT {
+        : {
+              /* 出力ファイルを書き込む部分 */
+              if((fp = fopen("resutl.ll","w")) == NULL) 
+                     {
+                            fprintf(stderr, "result.llのオープンに失敗しました\n");
+                            exit(1);
+
+                     }
+       }
+       PROGRAM IDENT {
 
                		       /*-----------------------------------------------------*/
 
-
+                                   
                                    /* 大域変数を格納するfundeclを作るコード*/
 					
                                    Fundecl *new;
@@ -126,11 +135,11 @@ program
                                    arg1.val = 0;
 
                                    (tmp->args).ret.arg1 = arg1;
-
                                    addList(tmp);
         } PERIOD {
 
 		displayLLVMfundecl(declhd);
+              fclose(fp);
           }
         ;
 

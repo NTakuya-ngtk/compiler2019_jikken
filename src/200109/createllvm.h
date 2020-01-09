@@ -128,4 +128,6 @@ void displayLLVMcodes(LLVMcode *code); // LLVMの命令列を書き出す関数
 void displayLLVMfundecl(Fundecl *decl); // LLVMの関数列を書き出す関数
 void displayGlobalVar(char *varname);
 
+FILE *fp;					//全てで共通に使うファイルポインタ
+
 #endif

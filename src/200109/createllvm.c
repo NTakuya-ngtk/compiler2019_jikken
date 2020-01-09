@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "createllvm.h"
 #include "symbol.h"
-#define FP stdout
+#define FP fp
 
 Factorstack fstack;  // 整数もしくはレジスタ番号を保持するスタック
 
