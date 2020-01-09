@@ -56,9 +56,8 @@ program
 					new->next = NULL;
                                    
 
-                                   // 初回は関数名がないため，NULL入力する．strcpyかもしれない．
-					strcpy(new->fname,$2);
-                                   strcpy(programName,$2);
+                                   // 初回はmain関数のため，"main"を格納
+					strcpy(new->fname,"main");
 
                                     /* 線形リストのポインタを更新 */
 
@@ -67,15 +66,10 @@ program
                                    } else {             /* 関数定義の線形リストに1つ以上存在する時*/
                                           decltl->next = new;  // 関数定義列の末尾に*newを追加
                                           decltl = new;        // 関数定義列の末尾として*newを保存する
+                                   
+				       /*-----------------------------------------------------*/
                                    }
-
-                                   codetl = NULL;
-
-					
-
-					/*-----------------------------------------------------*/
-
-        } 
+                            }
         SEMICOLON outblock PERIOD {
 
 		displayLLVMfundecl(declhd);
@@ -134,15 +128,9 @@ proc_name
 					new->next = NULL;
                                    
                                    // 関数名等を保存
-                                   
-                                   if($1 == NULL){
-                                          strcpy(new->fname,"main");
-                                   }else {
-                                          strcpy(new->fname,$1);
-                                   }
+                                   strcpy(new->fname,$1);
 					
-                                   
-
+                            
                                     /* 線形リストのポインタを更新 */
 
                                    if(decltl == NULL){  /* 関数定義の線形リストの最初であるとき*/
@@ -273,7 +261,7 @@ expression
 
 			 {
 				 /* 加算命令をLLVMコードとして生成するCプログラム */
-				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
+				 LLVMcode *tmp;                //生成した命令へのポインタ
 				 Factor arg1, arg2,retval; 　　//加算の引数、結果
 				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
 
@@ -298,7 +286,7 @@ expression
                      {
                             
                             /* 減算命令をLLVMコードとして生成するCプログラム */
-				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
+				 LLVMcode *tmp;                //生成した命令へのポインタ
 				 Factor arg1, arg2,retval; 　　//減算の引数、結果
 				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
 
@@ -327,7 +315,7 @@ term
        | term MULT factor
                      {
                             /* 乗算命令をLLVMコードとして生成するCプログラム */
-				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
+				 LLVMcode *tmp;               //生成した命令へのポインタ
 				 Factor arg1, arg2,retval; 　　//乗算の引数、結果
 				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
 
@@ -415,8 +403,7 @@ var_name
 				 
                              /*----------------------------*/
                             }
-                                   
-                            
+                                                        
 				 
        ;
 
@@ -426,86 +413,19 @@ var_name
        ;
 */
 id_list
-       : IDENT { insert($1,flag);} {
+       : IDENT { insert($1,flag);} 
                             {
-       
-                                   /*変数を宣言する｜alloca*/
-
-                                   LLVMcode* tmp;
-                                   Factor retval;
-                                   
-                                   tmp = memoryGet(tmp); 
-                                   switch(flag){
-                                          case LOCAL_VAR:
-                                                 tmp->command=Alloca;
-                                                 break;
-                                          case GLOBAL_VAR:
-                                                 tmp->command=Global;
-                                                 break;
-                                          default:
-                                                 break;
-                                   }
-
-                                   strcpy(retval.vname,$1);
-                                   retval.type = flag;
-                                   retval.val = cnrt;
-                                   cnrt++;
-
-                                    switch(flag){
-                                          case LOCAL_VAR:
-                                                 (tmp->args).alloca.retval = retval;
-                                                 break;
-                                          case GLOBAL_VAR:
-                                                 (tmp->args).global.retval = retval;
-                                                 break;
-                                          default:
-                                                 break;
-                                    }
-                                   addList(tmp);
-                                   
-                                   factorpush(retval);
+                                   /* 大域変数を出力する*/
+                                   displayGlobalVar($1);
 
                                    /*----------------------------*/
                             }
 
-       }
-       | id_list COMMA IDENT {insert($3,flag);} {
-
        
-                                   /*変数を宣言する｜alloca*/
-
-                                   LLVMcode* tmp;
-                                   Factor retval;
-                                   
-                                   tmp = memoryGet(tmp); 
-                                   switch(flag){
-                                          case LOCAL_VAR:
-                                                 tmp->command=Alloca;
-                                                 break;
-                                          case GLOBAL_VAR:
-                                                 tmp->command=Global;
-                                                 break;
-                                          default:
-                                                 break;
-                                   }      
-                                   strcpy(retval.vname,$3);
-                                   retval.type = flag;
-                                   retval.val = cnrt;
-                                   cnrt++;
-
-                                    switch(flag){
-                                          case LOCAL_VAR:
-                                                 (tmp->args).alloca.retval = retval;
-                                                 break;
-                                          case GLOBAL_VAR:
-                                                 (tmp->args).global.retval = retval;
-                                                 break;
-                                          default:
-                                                 break;
-                                    }
-                                   addList(tmp);
-                                   
-                                   factorpush(retval);
+       | id_list COMMA IDENT {insert($3,flag);}
+                            {
+                                  /* 大域変数を出力する*/
+                                   displayGlobalVar($3);
 
                                    /*----------------------------*/
                             }

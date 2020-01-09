@@ -47,7 +47,15 @@ void addList(LLVMcode *tmp){
 		codetl = tmp;        //生成中の命令列の末尾の命令として記憶
 	}
 }
-		
+
+void displayGlobalVar(char *varname){
+	fprintf(FP,"@%s",varname);
+	fprintf(FP," = ");
+	fprintf(FP,"common global i32 0, align 4");
+	fprintf(FP,"\n");
+	return;
+
+}
 	 
 void displayFactor(Factor factor){
 	switch(factor.type){
@@ -83,14 +91,15 @@ void displayLLVMcodes(LLVMcode *code){
 			fprintf(FP,"\n");
 			break;
 
-		case Global:
+		// LLVMcodesの中で，Globalが出てくることはない．	
+		/*case Global:
 			displayFactor((code->args).global.retval);
 			fprintf(FP," = ");
 			fprintf(FP,"common global i32 0, align 4");
 			fprintf(FP,"\n");
 			break;
+		*/
 
-		
 		case Store:
 			fprintf(FP,"store i32 ");
 			displayFactor((code->args).store.arg1);

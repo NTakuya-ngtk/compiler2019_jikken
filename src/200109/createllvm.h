@@ -18,7 +18,7 @@ typedef struct{
 /* LLVM 命令の種類 */
 typedef enum{
 	Alloca,   /* alloca */
-	Global,   /* global*/
+	//Global,   /* global*/
 	Store,    /* Store */
 	Load,     /* Load  */
 	BrUncond, /*  br   */
@@ -50,9 +50,10 @@ typedef struct llvmcode {
 			Factor retval;
 		}alloca;
 
-		struct {   //global
-			Factor retval;
-		}global;
+		//globalの命令が必要なのは大域変数のみで，ここでは表示されない
+		//struct {   //global
+		//	Factor retval;
+		//}global;
 
 		struct {   //store
 			Factor arg1; Factor arg2;
@@ -126,6 +127,6 @@ void addList(LLVMcode *tmp);  // 命令列に新しい要素tmpを加える関�
 void displayFactor(Factor factor); //要素の一覧を書き出す関数
 void displayLLVMcodes(LLVMcode *code); // LLVMの命令列を書き出す関数
 void displayLLVMfundecl(Fundecl *decl); // LLVMの関数列を書き出す関数
-
+void displayGlobalVar(char *varname);
 
 #endif
