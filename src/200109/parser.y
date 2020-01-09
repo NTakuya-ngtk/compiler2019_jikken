@@ -133,7 +133,12 @@ proc_name
                                    
                                    // 関数名等を保存
                                    
-					strcpy(new->fname,$1);
+                                   if($1 == NULL){
+                                          strcpy(new->fname,"main");
+                                   }else {
+                                          strcpy(new->fname,$1);
+                                   }
+					
                                    
 
                                     /* 線形リストのポインタを更新 */
