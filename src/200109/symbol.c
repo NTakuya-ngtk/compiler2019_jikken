@@ -40,7 +40,8 @@ void lookup(char *SearchName){
 	while(1){
 		
 		if(strcmp(temp->name,SearchName)==0){
-//			printf("VarName:%s,VarType:%d\n",temp->name,temp->type);
+			//sprintf(tempstr,"%s,%s",temp->name,temp->type);
+			printf("%s,%s",temp->name,temp->type);
 			return;
 		}
 		if(temp->next == NULL){

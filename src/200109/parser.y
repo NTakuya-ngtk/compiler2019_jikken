@@ -119,11 +119,11 @@ proc_name
 
 		                     /*-----------------------------------------------------*/
 
-
                                    /* 以下プログラム名から関数のLLVMコードを生成するCプログラム*/
                                    /* このプログラムはProcedureがある場合のみ機能するので，main関数を含めることができていない */
 					
                                    Fundecl *new;
+                                   
 					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
 					new->next = NULL;
                                    
@@ -377,20 +377,28 @@ factor
        ;
 
 var_name
-       : IDENT { lookup($1);}
+       : IDENT { /* lookup($1);*/}
 
                             { 
                                    
-                             /*引数をスタック からポップして，新引数をレジスタへ格納後スタック へプッシュする | Load*/
+                             /*与えられた引数を新引数をレジスタへ格納後スタック へプッシュする | Load*/
                              LLVMcode* tmp;
+
+                             char *tempstr;
+
                              Factor arg1,retval;
                              tmp = memoryGet(tmp); 
 
                              tmp->command=Load;
-                             
-                             arg1 = factorpop();
 
-                             retval.type = flag;
+
+                             /* 記号表から引数のデータを取得 */
+                             printf("varname:%s\n\n",$1);
+                             lookup($1);
+                             //sscanf(tempstr,"%s,%d",arg1.vname,&(arg1.type));
+                            
+
+                             retval.type = LOCAL_VAR; /* 新規に変数を格納するのは局所変数 */
                              retval.val = cnrt;
                              cnrt++;
 

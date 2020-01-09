@@ -18,8 +18,6 @@ typedef struct{
 }SymbolTable ;
 
 
-
-
 void insert(char *NewName,Scope NewType);
 void lookup(char *SearchName);
 SymbolTable *root=NULL;
