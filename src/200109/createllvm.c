@@ -196,7 +196,7 @@ void displayLLVMcodes(LLVMcode *code){
 				fprintf(FP,"i32 ");
 				displayFactor((code->args).ret.arg1);
 				fprintf(FP,"\n");
-			}else{
+			}else{ /* arg1.vnameがNULLの時に返り値のないvoidとして出力する*/
 				fprintf(FP,"void ");
 				fprintf(FP,"\n");
 			}
