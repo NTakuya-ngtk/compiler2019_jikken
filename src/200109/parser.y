@@ -46,7 +46,7 @@
 program
         : {
               /* 出力ファイルを書き込む部分 */
-              if((fp = fopen("resutl.ll","w")) == NULL) 
+              if((fp = fopen("result.ll","w")) == NULL) 
                      {
                             fprintf(stderr, "result.llのオープンに失敗しました\n");
                             exit(1);
