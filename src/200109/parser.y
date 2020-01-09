@@ -44,7 +44,37 @@
 %%
 
 program
-        : PROGRAM IDENT SEMICOLON outblock PERIOD {
+        : PROGRAM IDENT {
+
+               		       /*-----------------------------------------------------*/
+
+
+                                   /* 大域変数を格納するfundeclを作るコード*/
+					
+                                   Fundecl *new;
+					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
+					new->next = NULL;
+                                   
+
+                                   // 初回は関数名がないため，NULL入力する．strcpyかもしれない．
+					strcpy(new->fname,$2);
+                                   strcpy(programName,$2);
+
+                                    /* 線形リストのポインタを更新 */
+
+                                   if(decltl == NULL){  /* 関数定義の線形リストの最初であるとき*/
+                                          declhd = decltl = new;
+                                    } else {             /* 関数定義の線形リストに1つ以上存在する時*/
+                                          decltl->next = new;  // 関数定義列の末尾に*newを追加
+                                          decltl = new;        // 関数定義列の末尾として*newを保存する
+
+                                   };
+					
+
+					/*-----------------------------------------------------*/
+
+        } 
+        SEMICOLON outblock PERIOD {
 
 		displayLLVMfundecl(declhd);
           }
@@ -88,29 +118,28 @@ proc_decl
        ;
 
 proc_name
-       : IDENT {flag = PROC_NAME; insert($1,flag);}  {
-					
-                                  /*-----------------------------------------------------*/
+       : IDENT {flag = PROC_NAME; insert($1,flag);}  
+                            {
+
+		                     /*-----------------------------------------------------*/
 
 
                                    /* 以下プログラム名から関数のLLVMコードを生成するCプログラム*/
-                                   /* 関数のポインタをスタック で用意し，topからLLVMコードへの接続を
-                                   けして，2つめにmain関数を入れる．
-                                   or
-                                      関数のポインタが始まる1つ前に，factorクラスからllvmコードから出力させ，
-                                      帯域変数が正しくLLCMコードとして出力される状態を目指す．
-                                   */
-					Fundecl *new;
+                                   /* このプログラムはProcedureがある場合のみ機能するので，main関数を含めることができていない */
+					
+                                   Fundecl *new;
 					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
 					new->next = NULL;
-
+                                   
                                    // 関数名等を保存
+                                   
 					strcpy(new->fname,$1);
+                                   
 
                                     /* 線形リストのポインタを更新 */
 
                                    if(decltl == NULL){  /* 関数定義の線形リストの最初であるとき*/
-                                          declhd = decltl = new;
+                                         declhd = decltl = new;
                                    } else {             /* 関数定義の線形リストに1つ以上存在する時*/
                                           decltl->next = new;  // 関数定義列の末尾に*newを追加
                                           decltl = new;        // 関数定義列の末尾として*newを保存する
@@ -118,9 +147,10 @@ proc_name
                                    };
 					
 
-					/*-----------------------------------------------------*/
+					/*-----------------------------------------------------*/		
+                                  
 					
-          }
+                            }
        ;
 
 inblock
@@ -203,7 +233,6 @@ proc_call_name
 block_statement
        : SBEGIN {
                      /* ここが，ブロックのはじめであるため，関数の書き出しを行うなら，ここであると考えらえれる*/
-
        }
        statement_list SEND
        ;
