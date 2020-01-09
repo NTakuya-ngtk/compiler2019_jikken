@@ -262,7 +262,7 @@ expression
 			 {
 				 /* 加算命令をLLVMコードとして生成するCプログラム */
 				 LLVMcode *tmp;                //生成した命令へのポインタ
-				 Factor arg1, arg2,retval; 　　//加算の引数、結果
+				 Factor arg1, arg2,retval;      //加算の引数、結果
 				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
 
 				 tmp->command = Add;
@@ -287,7 +287,7 @@ expression
                             
                             /* 減算命令をLLVMコードとして生成するCプログラム */
 				 LLVMcode *tmp;                //生成した命令へのポインタ
-				 Factor arg1, arg2,retval; 　　//減算の引数、結果
+				 Factor arg1, arg2,retval;      //減算の引数、結果
 				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
 
 				 tmp->command = Sub;
@@ -316,7 +316,7 @@ term
                      {
                             /* 乗算命令をLLVMコードとして生成するCプログラム */
 				 LLVMcode *tmp;               //生成した命令へのポインタ
-				 Factor arg1, arg2,retval; 　　//乗算の引数、結果
+				 Factor arg1, arg2,retval;      //乗算の引数、結果
 				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
 
 				 tmp->command = Mul;
@@ -339,8 +339,8 @@ term
        | term DIV factor    
                      {
                             /* 除算命令をLLVMコードとして生成するCプログラム */
-				 LLVMcode *tmp;            　　 //生成した命令へのポインタ
-				 Factor arg1, arg2,retval; 　　//除算の引数、結果
+				 LLVMcode *tmp;             //生成した命令へのポインタ
+				 Factor arg1, arg2,retval;      //除算の引数、結果
 				 tmp = memoryGet(tmp);          //mallocによるメモリ確保
 
 				 tmp->command = Div;
