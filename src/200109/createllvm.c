@@ -191,8 +191,15 @@ void displayLLVMcodes(LLVMcode *code){
 			break;
 
 	  	case Ret:
-
-			//工事中//
+			fprintf(FP,"ret ");
+			if(((code->args).ret.arg1.vname) != NULL){
+				fprintf(FP,"i32 ");
+				displayFactor((code->args).ret.arg1);
+				fprintf(FP,"\n");
+			}else{
+				fprintf(FP,"void ");
+				fprintf(FP,"\n");
+			}
 			
 			break;
 

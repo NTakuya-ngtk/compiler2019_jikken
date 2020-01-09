@@ -86,6 +86,8 @@ program
 
                                    addList(tmp);
 
+                                   /* ----------------- */
+
                                    /* main関数のコード番地をstoreするコード*/
 
                                    LLVMcode* tmp1;
@@ -111,7 +113,22 @@ program
 				       /*-----------------------------------------------------*/
                                    
                             }
-        SEMICOLON outblock PERIOD {
+        SEMICOLON outblock {
+                                   /* main関数からRetするコード*/
+                                   LLVMcode* tmp;
+                                   Factor arg1;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Ret;
+
+                                   arg1.type = CONSTANT;
+                                   arg1.val = 0;
+
+                                   (tmp->args).ret.arg1 = arg1;
+
+                                   addList(tmp);
+        } PERIOD {
 
 		displayLLVMfundecl(declhd);
           }
