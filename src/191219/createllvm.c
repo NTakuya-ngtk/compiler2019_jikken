@@ -185,13 +185,13 @@ void displayLLVMfundecl(Fundecl *decl){
 	if(decl == NULL){
 		return;
 	}
-	printf("%s\n",programName);
-	printf("%s\n",decl->fname);
 	/* 大域変数のみ先に出力するのであれば，回数をカウントし，初回はスキップするようにしないといけない */
 	if(strcmp(decl->fname,programName) != 0){
 		fprintf(FP,"define i32 @%s() {\n", decl->fname);
 		displayLLVMcodes(decl->codes);
 		fprintf(FP,"}\n");
+	} else {
+		displayLLVMcodes(decl->codes);
 	}
 
 	if(decl->next != NULL){

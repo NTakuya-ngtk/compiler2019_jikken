@@ -125,6 +125,7 @@ proc_name
 
 
                                    /* 以下プログラム名から関数のLLVMコードを生成するCプログラム*/
+                                   /* このプログラムはProcedureがある場合のみ機能するので，main関数を含めることができていない */
 					
                                    Fundecl *new;
 					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
