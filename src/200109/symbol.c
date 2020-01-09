@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "symbol.h"
+#include "createllvm.h"
 
 
 /* insert function */
@@ -20,8 +21,10 @@ void insert(char *NewName,Scope NewType){
 		new->next = root;
 	}
 	strcpy(new->name,NewName); //文字列の代入
+	// printf("nt:%d\n",NewType);
 	new->type = NewType;
 	root = new;
+	//printf("nt:%d\n",new->type);
 	
 //	printf("InsertData:%s,%d,%d\n",new->name,new->rNum,new->type);
 
@@ -35,13 +38,14 @@ void lookup(char *SearchName){
 	SymbolTable *temp;
 	
 	temp = root;
-	
+	// printf("serchName:%s",SearchName);
 	
 	while(1){
 		
 		if(strcmp(temp->name,SearchName)==0){
-			//sprintf(tempstr,"%s,%s",temp->name,temp->type);
-			printf("%s,%s",temp->name,temp->type);
+			varType = temp->type;
+			//sprintf(tempstr,"%s,%d",temp->name,temp->type);
+			//printf("%s,%d",temp->name,temp->type);
 			return;
 		}
 		if(temp->next == NULL){

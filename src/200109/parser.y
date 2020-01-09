@@ -170,7 +170,7 @@ statement
        ;
 
 assignment_statement
-       : IDENT {lookup($1);} ASSIGN expression
+       : IDENT {/* lookup($1); */} ASSIGN expression
                              {
                                    /*変数引数をスタックからpopしてレジスタへ格納する ｜Store*/
 
@@ -214,7 +214,7 @@ while_statement
        ;
 
 for_statement
-       : FOR IDENT {lookup($2);} ASSIGN expression TO expression DO statement
+       : FOR IDENT {/* lookup($2); */} ASSIGN expression TO expression DO statement
        ;
 
 proc_call_statement
@@ -222,7 +222,7 @@ proc_call_statement
        ;
 
 proc_call_name
-       : IDENT { lookup($1);}
+       : IDENT { /* lookup($1); */}
        ;
 
 block_statement
@@ -233,7 +233,7 @@ block_statement
        ;
 
 read_statement
-       : READ LPAREN IDENT { lookup($3); } RPAREN
+       : READ LPAREN IDENT { /* lookup($3);*/ } RPAREN
        ;
 
 write_statement
@@ -384,8 +384,6 @@ var_name
                              /*与えられた引数を新引数をレジスタへ格納後スタック へプッシュする | Load*/
                              LLVMcode* tmp;
 
-                             char *tempstr;
-
                              Factor arg1,retval;
                              tmp = memoryGet(tmp); 
 
@@ -393,9 +391,9 @@ var_name
 
 
                              /* 記号表から引数のデータを取得 */
-                             printf("varname:%s\n\n",$1);
                              lookup($1);
-                             //sscanf(tempstr,"%s,%d",arg1.vname,&(arg1.type));
+                             strcpy(arg1.vname,$1);
+                             arg1.type = varType;
                             
 
                              retval.type = LOCAL_VAR; /* 新規に変数を格納するのは局所変数 */
@@ -422,9 +420,46 @@ var_name
 */
 id_list
        : IDENT { insert($1,flag);} 
-                            {
-                                   /* 大域変数を出力する*/
-                                   displayGlobalVar($1);
+                            { 
+                                   LLVMcode* tmp;
+                                   tmp = memoryGet(tmp); 
+                                   Factor arg1,retval;
+
+                                   switch(varType){
+                                          case GLOBAL_VAR:
+                                                 /* 大域変数を出力する*/
+                                                 displayGlobalVar($1);
+                                                 break;
+                                          
+                                          case LOCAL_VAR:
+                                          /*与えられた引数を新引数をレジスタへ格納後スタック へプッシュする | Load*/
+                                                 
+
+                                                 tmp->command=Load;
+
+
+                                                 /* 記号表から引数のデータを取得 */
+                                                 lookup($1);
+                                                 strcpy(arg1.vname,$1);
+                                                 arg1.type = varType;
+                                                 
+
+                                                 retval.type = LOCAL_VAR; /* 新規に変数を格納するのは局所変数 */
+                                                 retval.val = cnrt;
+                                                 cnrt++;
+
+                                                 (tmp->args).load.arg1 = arg1;
+                                                 (tmp->args).load.retval = retval;
+
+                                                 addList(tmp);
+                                                 
+                                                 factorpush(retval);
+                                                 break;
+                                   
+                                          default:
+                                                 break;
+                                     
+                                     }
 
                                    /*----------------------------*/
                             }
@@ -432,8 +467,43 @@ id_list
        
        | id_list COMMA IDENT {insert($3,flag);}
                             {
-                                  /* 大域変数を出力する*/
-                                   displayGlobalVar($3);
+                                   LLVMcode* tmp;
+                                   tmp = memoryGet(tmp); 
+                                   Factor arg1,retval;
+                                   switch(flag){
+                                          case GLOBAL_VAR:
+                                                 /* 大域変数を出力する*/
+                                                 displayGlobalVar($3);
+                                                 break;
+                                          case LOCAL_VAR:
+                                           /* 与えられた引数を新引数をレジスタへ格納後スタック へプッシュする | Load*/
+                                                 
+
+                                                 tmp->command=Load;
+
+
+                                                 /* 記号表から引数のデータを取得 */
+                                                 lookup($3);
+                                                 strcpy(arg1.vname,$3);
+                                                 arg1.type = LOCAL_VAR;
+                                                 
+
+                                                 retval.type = LOCAL_VAR; /* 新規に変数を格納するのは局所変数 */
+                                                 retval.val = cnrt;
+                                                 cnrt++;
+
+                                                 (tmp->args).load.arg1 = arg1;
+                                                 (tmp->args).load.retval = retval;
+
+                                                 addList(tmp);
+                                                 
+                                                 factorpush(retval);
+                                                 break;
+                                   
+                                          default:
+                                                 break;
+                                  }
+
 
                                    /*----------------------------*/
                             }

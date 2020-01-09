@@ -22,6 +22,7 @@ void insert(char *NewName,Scope NewType);
 void lookup(char *SearchName);
 SymbolTable *root=NULL;
 
+Scope varType; // 変数のタイプを表す大域変数
 
 
 #endif
