@@ -186,7 +186,33 @@ void displayLLVMcodes(LLVMcode *code){
 			
 		case Icmp:
 
-			//工事中//
+			displayFactor((code->args).icmp.retval);
+			fprintf(FP," = icmp ");
+			switch((code->args).icmp.type){
+				case EQUAL:
+					fprintf(FP,"eq ");
+					break;
+				case NE:
+					fprintf(FP,"ne ");
+					break;
+				case SGT:
+					fprintf(FP,"sgt ");
+					break;
+				case SGE:
+					fprintf(FP,"sge ");
+					break;
+				case SLT:
+					fprintf(FP,"slt ");
+					break;
+				case SLE:
+					fprintf(FP,"sle ");
+					break;
+			}
+			fprintf(FP,"i32 ");
+			displayFactor((code->args).icmp.arg1);
+			fprintf(FP," ");
+			displayFactor((code->args).icmp.arg2);
+			fprintf(FP,"\n");
 			
 			break;
 
