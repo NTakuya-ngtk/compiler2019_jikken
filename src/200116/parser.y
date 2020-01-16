@@ -269,25 +269,45 @@ assignment_statement
        ;
 
 if_statement
-       : IF condition THEN {
+       : IF          {           /*
+
+                                   LLVMcode* tmp1,tmp2;
+                                   int arg1,l;
+                                   tmp1 = memoryGet(tmp1);
+                                   tmp2 = memoryGet(tmp2);
+
+                                   arg1 = l = cnrt;
+                                   cnrt++;
+
+                                   tmp1->command = BrUncond
+                                   tmp2->command = Label
+
+                                   (tmp->args).bruncond.arg1 = arg1;
+                                   (tmp->args).label.l = l;
+
+                                   addList(tmp1);
+                                   addList(tmp2);
+                                   ----------------------------*/
+
+                     }
+       condition THEN {
 
                                    /*制御文を記述する*/
 
                                    LLVMcode* tmp;
                                    Factor arg1;
-                                   int arg2,arg3;
+                                   int arg2;
 
                                    tmp = memoryGet(tmp); 
 
                                    tmp->command=BrCond;
 
                                    arg1 = factorpop();
-
-                                   arg2 = arg3 = 0; // ここはバックパッチで決まるラベルの値
+                                   arg2 = cnrt;
+                                   cnrt++;
 
                                    (tmp->args).brcond.arg1 = arg1;
                                    (tmp->args).brcond.arg2 = arg2;
-                                   (tmp->args).brcond.arg3 = arg3;
 
                                    addList(tmp);
                                    brpush(tmp);
@@ -319,7 +339,7 @@ proc_call_name
        ;
 
 block_statement
-       : SBEGIN {
+       : SBEGIN { // 一旦これが正しいのか不明なのでチェックする。beginは手続きなので、いずれにせよこの制御は必要に感じるが、brcond やbruncondのような記述が正しいのか確認する
                                    if(bstack.top != 0){
                                           /*制御の始めのためラベルを格納する*/
 
