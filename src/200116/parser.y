@@ -204,8 +204,51 @@ proc_name
                                    // 新しい関数列ができたので，codehdとcodetlをnullにする
                                    codehd = codetl = NULL;
                                    // decltl->next = new;  // 関数定義列の末尾に*newを追加
-                                   // decltl = new;        // 関数定義列の末尾として*newを保存する					
+                                   // decltl = new;        // 関数定義列の末尾として*newを保存する
 
+                                   /* procedureをAllocaするコード*/
+                                   LLVMcode* tmp;
+                                   Factor retval;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Alloca;
+
+                                   cnrt = 1; // cnrtの初期化を行う
+
+                                   retval.type = LOCAL_VAR;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                   (tmp->args).alloca.retval = retval;
+                                   
+                                   factorpush(retval);
+
+                                   addList(tmp);
+
+                                   /* ----------------- */
+
+                                   /* prodecureのコード番地をstoreするコード*/
+
+                                   LLVMcode* tmp1;
+                                   Factor arg1,arg2;
+
+                                   tmp1 = memoryGet(tmp1); 
+
+                                   tmp1->command=Store;
+
+                                   arg2 = factorpop();  /* 局所変数%1を取り出す*/
+                                   
+                                   // strcpy(arg1.vname,$1);
+                                   arg1.type = CONSTANT;
+                                   arg1.val = 0;
+
+                                   // factorpush(arg2);
+
+                                   (tmp1->args).store.arg1 = arg1;
+                                   (tmp1->args).store.arg2 = arg2;
+
+                                   addList(tmp1);
 					/*-----------------------------------------------------*/		
                                   
 					
@@ -755,7 +798,7 @@ id_list
                                    tmp = memoryGet(tmp); 
                                    Factor arg1,retval;
 
-                                   switch(varType){
+                                   switch(flag){
                                           case GLOBAL_VAR:
                                                  /* 大域変数を出力する*/
                                                  displayGlobalVar($1);
@@ -765,25 +808,25 @@ id_list
                                           /*与えられた引数を新引数をレジスタへ格納後スタック へプッシュする | Load*/
                                                  
 
-                                                 tmp->command=Load;
+                                               //  tmp->command=Load;
 
 
                                                  /* 記号表から引数のデータを取得 */
-                                                 lookup($1);
-                                                 strcpy(arg1.vname,$1);
-                                                 arg1.type = varType;
+                                               //  lookup($1);
+                                               //  strcpy(arg1.vname,$1);
+                                               //  arg1.type = varType;
                                                  
 
-                                                 retval.type = LOCAL_VAR; /* 新規に変数を格納するのは局所変数 */
-                                                 retval.val = cnrt;
-                                                 cnrt++;
+                                               //  retval.type = LOCAL_VAR; /* 新規に変数を格納するのは局所変数 */
+                                               //  retval.val = cnrt;
+                                               //  cnrt++;
 
-                                                 (tmp->args).load.arg1 = arg1;
-                                                 (tmp->args).load.retval = retval;
+                                               //  (tmp->args).load.arg1 = arg1;
+                                               //  (tmp->args).load.retval = retval;
 
-                                                 addList(tmp);
+                                               //  addList(tmp);
                                                  
-                                                 factorpush(retval);
+                                               //  factorpush(retval);
                                                  break;
                                    
                                           default:
@@ -800,7 +843,7 @@ id_list
                                    LLVMcode* tmp;
                                    tmp = memoryGet(tmp); 
                                    Factor arg1,retval;
-                                   switch(varType){
+                                   switch(flag){
                                           case GLOBAL_VAR:
                                                  /* 大域変数を出力する*/
                                                  displayGlobalVar($3);
@@ -809,25 +852,25 @@ id_list
                                            /* 与えられた引数を新引数をレジスタへ格納後スタック へプッシュする | Load*/
                                                  
 
-                                                 tmp->command=Load;
+                                               //  tmp->command=Load;
 
 
                                                  /* 記号表から引数のデータを取得 */
-                                                 lookup($3);
-                                                 strcpy(arg1.vname,$3);
-                                                 arg1.type = LOCAL_VAR;
+                                               //  lookup($3);
+                                               //  strcpy(arg1.vname,$3);
+                                               //  arg1.type = LOCAL_VAR;
                                                  
 
-                                                 retval.type = LOCAL_VAR; /* 新規に変数を格納するのは局所変数 */
-                                                 retval.val = cnrt;
-                                                 cnrt++;
+                                               //  retval.type = LOCAL_VAR; /* 新規に変数を格納するのは局所変数 */
+                                               //  retval.val = cnrt;
+                                               //  cnrt++;
 
-                                                 (tmp->args).load.arg1 = arg1;
-                                                 (tmp->args).load.retval = retval;
+                                               //  (tmp->args).load.arg1 = arg1;
+                                               //  (tmp->args).load.retval = retval;
 
-                                                 addList(tmp);
+                                               //  addList(tmp);
                                                  
-                                                 factorpush(retval);
+                                               //  factorpush(retval);
                                                  break;
                                    
                                           default:
