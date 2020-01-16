@@ -137,7 +137,7 @@ void displayGlobalVar(char *varname);	// GLOBAL_VARを書き出す関数
 void init_brstak();						//bstackの初期化
 void brpush(LLVMcode* x);				//brコマンドを格納するためのスタックプッシュ
 LLVMcode*  brpop();						//brコマンドを出力するためのスタックプッシュ
-
+int jumpid;
 
 FILE *fp;					//全てで共通に使うファイルポインタ
 

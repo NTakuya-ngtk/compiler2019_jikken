@@ -142,7 +142,7 @@ void displayLLVMcodes(LLVMcode *code){
 
 		case BrUncond:
 			fprintf(FP,"br label %d",((code->args).bruncond.arg1));
-			fprintf(FP,"\n\n");
+			fprintf(FP,"\n");
 
 			break;
 
@@ -150,10 +150,11 @@ void displayLLVMcodes(LLVMcode *code){
 			fprintf(FP,"br i1 ");
 			displayFactor((code->args).brcond.arg1);
 			fprintf(FP,", label %%%d, label %%%d",(code->args).brcond.arg2,(code->args).brcond.arg3);
-			fprintf(FP,"\n\n");
+			fprintf(FP,"\n");
 			break;
 
 		case Label:
+			fprintf(FP,"\n");
 			fprintf(FP,"; <label>:%d:",(code->args).label.l);
 			fprintf(FP,"\n");
 
