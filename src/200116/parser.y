@@ -281,16 +281,13 @@ if_statement
 
                                    tmp->command=Brcond;
 
-                                   arg1 = factorpop(); 
-                                    
-                                   strcpy(arg2.vname,$1);
-                                   arg2.type = flag;
-                                   arg2.val = cnrt;
+                                   arg1 = factorpop();
 
-                                   factorpush(arg2);
+                                   arg2 = arg3 = 0; // ここはバックパッチで決まるラベルの値
 
-                                   (tmp->args).store.arg1 = arg1;
-                                   (tmp->args).store.arg2 = arg2;
+                                   (tmp->args).brcond.arg1 = arg1;
+                                   (tmp->args).brcond.arg2 = arg2;
+                                   (tmp->args).brcond.arg3 = arg3;
 
                                    addList(tmp);
                                    
