@@ -132,11 +132,11 @@ void addList(LLVMcode *tmp);  // 命令列に新しい要素tmpを加える関�
 void displayFactor(Factor factor); //要素の一覧を書き出す関数
 void displayLLVMcodes(LLVMcode *code); // LLVMの命令列を書き出す関数
 void displayLLVMfundecl(Fundecl *decl); // LLVMの関数列を書き出す関数
-void displayGlobalVar(char *varname);
+void displayGlobalVar(char *varname);	// GLOBAL_VARを書き出す関数
 
-void init_brstak();
-void brpush(LLVMcode* x);
-LLVMcode*  brpop();
+void init_brstak();						//bstackの初期化
+void brpush(LLVMcode* x);				//brコマンドを格納するためのスタックプッシュ
+LLVMcode*  brpop();						//brコマンドを出力するためのスタックプッシュ
 
 
 FILE *fp;					//全てで共通に使うファイルポインタ
