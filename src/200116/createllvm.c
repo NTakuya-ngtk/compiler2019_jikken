@@ -6,6 +6,7 @@
 #define FP fp
 
 Factorstack fstack;  // 整数もしくはレジスタ番号を保持するスタック
+brstack bstack;       // 関数の戻り位置を保持するスタック
 
 void init_fstack(){
 	fstack.top = 0;
@@ -22,6 +23,24 @@ Factor factorpop(){
 void factorpush(Factor x){
 	fstack.top ++;
 	fstack.element[fstack.top] = x;
+	return;
+}
+
+void init_brstak(){
+	bstack.top = 0;
+	return;
+}
+
+int brpop(){
+	int tmp;
+	tmp = bstack.element[bstack.top];
+	bstack.top --;
+	return tmp;
+}
+
+void brpush(int x){
+	bstack.top ++;
+	bstack.element[bstack.top] = x;
 	return;
 }
 

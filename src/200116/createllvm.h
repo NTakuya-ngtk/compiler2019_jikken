@@ -7,12 +7,17 @@ typedef struct{
 	char  vname[256];         /* 変数の場合は変数名*/
 	int   val;                /* 整数の場合はその値、変数の場合は割り当てたレジスタ番号*/
 	Scope type;                /* 変数（のレジスタ）か整数かの区別*/
-}Factor ;
+}Factor;
 
 typedef struct{
 	Factor element[100];  /*スタック 最大要素100まで*/
 	unsigned int top;          /*スタックのトップ位置*/
 }Factorstack;
+
+typedef struct{
+	int element[100];   /* スタック 最大要素100まで*/
+	unsigned int top;
+}brstack;
 
 
 /* LLVM 命令の種類 */
@@ -127,6 +132,11 @@ void displayFactor(Factor factor); //要素の一覧を書き出す関数
 void displayLLVMcodes(LLVMcode *code); // LLVMの命令列を書き出す関数
 void displayLLVMfundecl(Fundecl *decl); // LLVMの関数列を書き出す関数
 void displayGlobalVar(char *varname);
+
+void init_brstak();
+void brpush(int x);
+int  brpop();
+
 
 FILE *fp;					//全てで共通に使うファイルポインタ
 
