@@ -44,15 +44,13 @@
 %%
 
 program
-        : {
-              /* 出力ファイルを書き込む部分 */
-              if((fp = fopen("result.ll","w")) == NULL) 
-                     {
+       :      {
+                     /* 出力ファイルを書き込む部分 */
+                     if((fp = fopen("result.ll","w")) == NULL){
                             fprintf(stderr, "result.llのオープンに失敗しました\n");
                             exit(1);
-
                      }
-       }
+              }
        PROGRAM IDENT {
 
                		       /*-----------------------------------------------------*/
@@ -136,12 +134,13 @@ program
 
                                    (tmp->args).ret.arg1 = arg1;
                                    addList(tmp);
-        } PERIOD {
-
-		displayLLVMfundecl(declhd);
-              fclose(fp);
-          }
-        ;
+       }
+       PERIOD
+              {      
+	       	displayLLVMfundecl(declhd);
+                     fclose(fp);
+              }
+       ;
 
 outblock
         : var_decl_part subprog_decl_part statement
@@ -158,23 +157,23 @@ var_decl_list
 	 ;
 
 var_decl
-        :VAR id_list {
-        }
-	 ;
+       :VAR id_list {
+       }
+	;
 
 subprog_decl_part
-        : /* empty */
-        | subprog_decl_list SEMICOLON
+       : /* empty */
+       | subprog_decl_list SEMICOLON
 				;
 
 subprog_decl_list
-        : subprog_decl_list SEMICOLON subprog_decl
+       : subprog_decl_list SEMICOLON subprog_decl
 	| subprog_decl
 	;
 
 subprog_decl
-        : proc_decl
-				;
+       : proc_decl
+       ;
 
 proc_decl
        : PROCEDURE proc_name SEMICOLON inblock {delete();}
@@ -216,7 +215,8 @@ proc_name
        ;
 
 inblock
-       : { flag = LOCAL_VAR; } var_decl_part statement /*flagを変更する*/
+       : { flag = LOCAL_VAR; } 
+       var_decl_part statement /*flagを変更する*/
        ;
 
 statement_list
@@ -237,9 +237,11 @@ statement
        ;
 
 assignment_statement
-       : IDENT {/* lookup($1); */} ASSIGN expression
+       : IDENT 
+       {/* lookup($1); */ } 
+       ASSIGN expression
                              {
-                                   /*変数引数をスタックからpopしてレジスタへ格納する ｜Store*/
+                                  /*変数引数をスタックからpopしてレジスタへ格納する ｜Store*/
 
                                    LLVMcode* tmp;
                                    Factor arg1,arg2;
@@ -249,7 +251,7 @@ assignment_statement
                                    tmp->command=Store;
 
                                    arg1 = factorpop(); 
-                                   
+                                    
                                    strcpy(arg2.vname,$1);
                                    arg2.type = flag;
                                    arg2.val = cnrt;
@@ -267,7 +269,34 @@ assignment_statement
        ;
 
 if_statement
-       : IF condition THEN statement else_statement
+       : IF condition THEN {
+
+                                   /*制御文を記述する*/
+
+                                   LLVMcode* tmp;
+                                   Factor arg1;
+                                   int arg2,arg3;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Brcond;
+
+                                   arg1 = factorpop(); 
+                                    
+                                   strcpy(arg2.vname,$1);
+                                   arg2.type = flag;
+                                   arg2.val = cnrt;
+
+                                   factorpush(arg2);
+
+                                   (tmp->args).store.arg1 = arg1;
+                                   (tmp->args).store.arg2 = arg2;
+
+                                   addList(tmp);
+                                   
+                                   /*----------------------------*/
+       }
+       statement else_statement 
        ;
 
 else_statement
@@ -312,11 +341,198 @@ null_statement
 
 condition
        : expression EQ expression
+              {                           
+
+                                   /*整数比較命令を記述する*/
+
+                                   LLVMcode* tmp;
+                                   Cmptype type;
+                                   Factor arg1,arg2,retval;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Icmp;
+
+                                   arg1 = factorpop();
+                                   arg2 = factorpop();
+                                   
+                                   (tmp->args).icmp.type = EQUAL;
+
+                                   retval.type = LOCAL_VAR;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                   factorpush(retval);
+
+                                   (tmp->args).icmp.arg1 = arg1;
+                                   (tmp->args).icmp.arg2 = arg2;
+                                   (tmp->args).icmp.retval = retval;
+
+                                   addList(tmp);
+                                   
+                                   /*----------------------------*/
+       }
+       
        | expression NEQ expression
+                 {                           
+
+                                   /*整数比較命令を記述する*/
+
+                                   LLVMcode* tmp;
+                                   Cmptype type;
+                                   Factor arg1,arg2,retval;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Icmp;
+
+                                   arg1 = factorpop();
+                                   arg2 = factorpop();
+                                   
+                                   (tmp->args).icmp.type = NE;
+
+                                   retval.type = LOCAL_VAR;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                   factorpush(retval);
+
+                                   (tmp->args).icmp.arg1 = arg1;
+                                   (tmp->args).icmp.arg2 = arg2;
+                                   (tmp->args).icmp.retval = retval;
+
+                                   addList(tmp);
+                                   
+                                   /*----------------------------*/
+              }
        | expression LT expression
+                 {                           
+
+                                   /*整数比較命令を記述する*/
+
+                                   LLVMcode* tmp;
+                                   Cmptype type;
+                                   Factor arg1,arg2,retval;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Icmp;
+
+                                   arg1 = factorpop();
+                                   arg2 = factorpop();
+                                   
+                                   (tmp->args).icmp.type = SLT;
+
+                                   retval.type = LOCAL_VAR;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                   factorpush(retval);
+
+                                   (tmp->args).icmp.arg1 = arg1;
+                                   (tmp->args).icmp.arg2 = arg2;
+                                   (tmp->args).icmp.retval = retval;
+
+                                   addList(tmp);
+                                   
+                                   /*----------------------------*/
+              }
        | expression LE expression
+              {                           
+
+                                   /*整数比較命令を記述する*/
+
+                                   LLVMcode* tmp;
+                                   Cmptype type;
+                                   Factor arg1,arg2,retval;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Icmp;
+
+                                   arg1 = factorpop();
+                                   arg2 = factorpop();
+                                   
+                                   (tmp->args).icmp.type = SLE;
+
+                                   retval.type = LOCAL_VAR;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                   factorpush(retval);
+
+                                   (tmp->args).icmp.arg1 = arg1;
+                                   (tmp->args).icmp.arg2 = arg2;
+                                   (tmp->args).icmp.retval = retval;
+
+                                   addList(tmp);
+                                   
+                                   /*----------------------------*/
+              }
        | expression GT expression
+              {                           
+
+                                   /*整数比較命令を記述する*/
+
+                                   LLVMcode* tmp;
+                                   Cmptype type;
+                                   Factor arg1,arg2,retval;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Icmp;
+
+                                   arg1 = factorpop();
+                                   arg2 = factorpop();
+                                   
+                                   (tmp->args).icmp.type = SGT;
+
+                                   retval.type = LOCAL_VAR;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                   factorpush(retval);
+
+                                   (tmp->args).icmp.arg1 = arg1;
+                                   (tmp->args).icmp.arg2 = arg2;
+                                   (tmp->args).icmp.retval = retval;
+
+                                   addList(tmp);
+                                   
+                                   /*----------------------------*/
+              }
        | expression GE expression
+              {                           
+
+                                   /*整数比較命令を記述する*/
+
+                                   LLVMcode* tmp;
+                                   Cmptype type;
+                                   Factor arg1,arg2,retval;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Icmp;
+
+                                   arg1 = factorpop();
+                                   arg2 = factorpop();
+                                   
+                                   (tmp->args).icmp.type = SLE;
+
+                                   retval.type = LOCAL_VAR;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                   factorpush(retval);
+
+                                   (tmp->args).icmp.arg1 = arg1;
+                                   (tmp->args).icmp.arg2 = arg2;
+                                   (tmp->args).icmp.retval = retval;
+
+                                   addList(tmp);
+                                   
+                                   /*----------------------------*/
+              }
        ;
 
 expression

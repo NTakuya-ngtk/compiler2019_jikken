@@ -15,7 +15,7 @@ typedef struct{
 }Factorstack;
 
 typedef struct{
-	int element[100];   /* スタック 最大要素100まで*/
+	LLVMcode element[100];   /* スタック 最大要素100まで*/
 	unsigned int top;
 }brstack;
 
@@ -134,8 +134,8 @@ void displayLLVMfundecl(Fundecl *decl); // LLVMの関数列を書き出す関数
 void displayGlobalVar(char *varname);
 
 void init_brstak();
-void brpush(int x);
-int  brpop();
+void brpush(LLVMcode x);
+LLVMcode  brpop();
 
 
 FILE *fp;					//全てで共通に使うファイルポインタ

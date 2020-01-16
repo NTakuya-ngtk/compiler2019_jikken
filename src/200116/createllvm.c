@@ -31,14 +31,14 @@ void init_brstak(){
 	return;
 }
 
-int brpop(){
-	int tmp;
+LLVMcode brpop(){
+	LLVMcode tmp;
 	tmp = bstack.element[bstack.top];
 	bstack.top --;
 	return tmp;
 }
 
-void brpush(int x){
+void brpush(LLVMcode x){
 	bstack.top ++;
 	bstack.element[bstack.top] = x;
 	return;
