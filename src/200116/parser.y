@@ -17,7 +17,7 @@
 
 	Scope flag = GLOBAL_VAR;
 	//init_fstack();  // スタックの初期化を行う
-       int cnrt = 1;     // レジスタ番号
+       int cnrt = 0;     // レジスタ番号
 	
 %}
 
@@ -93,7 +93,6 @@ subprog_decl_part
        : /* empty */ 
        { // ここがメイン関数の入るところ
          
-					printf("debug");
                                    Fundecl *mainfunc;
 					mainfunc = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
 					mainfunc->next = NULL;
@@ -123,6 +122,7 @@ subprog_decl_part
                                    tmp = memoryGet(tmp); 
 
                                    tmp->command=Alloca;
+                                   cnrt = 1; // cnrtの初期化を行う
 
                                    retval.type = LOCAL_VAR;
                                    retval.val = cnrt;
@@ -149,7 +149,7 @@ subprog_decl_part
                                    
                                    // strcpy(arg1.vname,$1);
                                    arg1.type = CONSTANT;
-                                   arg1.val = 0;
+                                   arg1.val = 0; // 記号表の番地を代入する
 
                                    // factorpush(arg2);
 
@@ -159,7 +159,75 @@ subprog_decl_part
                                    addList(tmp1);
 
        }
-       | subprog_decl_list SEMICOLON
+       | subprog_decl_list SEMICOLON  { // ここがメイン関数の入るところ
+         
+					// printf("debug");
+                                   Fundecl *mainfunc;
+					mainfunc = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
+					mainfunc->next = NULL;
+                                   
+
+                                   // main関数のため，"main"を格納
+					strcpy(mainfunc->fname,"main");
+
+                                   /* 線形リストのポインタを更新 */
+                                    if(decltl == NULL) {   /* 関数定義の線形リストの最初であるとき*/
+                                          declhd = decltl = mainfunc;
+                                   } else {             /* 関数定義の線形リストに1つ以上存在する時*/
+                                          decltl->next = mainfunc;  // 関数定義列の末尾に*newを追加
+                                          decltl = mainfunc;        // 関数定義列の末尾として*newを保存する
+                                   }
+
+                                   // decltl->next = mainfunc;  // 関数定義列の末尾に*newを追加
+                                   // decltl = mainfunc;        // 関数定義列の末尾として*newを保存する
+
+                                   /* codehdおよびcodetlのリセット */
+                                   codehd = codetl = NULL;
+
+                                   /* main関数をAllocaするコード*/
+                                   LLVMcode* tmp;
+                                   Factor retval;
+
+                                   tmp = memoryGet(tmp); 
+
+                                   tmp->command=Alloca;
+                                   cnrt = 1; // cnrtの初期化を行う
+
+                                   retval.type = LOCAL_VAR;
+                                   retval.val = cnrt;
+                                   cnrt++;
+
+                                   (tmp->args).alloca.retval = retval;
+                                   
+                                   factorpush(retval);
+
+                                   addList(tmp);
+
+                                   /* ----------------- */
+
+                                   /* main関数のコード番地をstoreするコード*/
+
+                                   LLVMcode* tmp1;
+                                   Factor arg1,arg2;
+
+                                   tmp1 = memoryGet(tmp1); 
+
+                                   tmp1->command=Store;
+
+                                   arg2 = factorpop();  /* 局所変数%1を取り出す*/
+                                   
+                                   // strcpy(arg1.vname,$1);
+                                   arg1.type = CONSTANT;
+                                   arg1.val = 0; // 記号表の番地を代入する
+
+                                   // factorpush(arg2);
+
+                                   (tmp1->args).store.arg1 = arg1;
+                                   (tmp1->args).store.arg2 = arg2;
+
+                                   addList(tmp1);
+
+       }
 	;
 
 subprog_decl_list
@@ -230,25 +298,25 @@ proc_name
 
                                    /* prodecureのコード番地をstoreするコード*/
 
-                                   LLVMcode* tmp1;
-                                   Factor arg1,arg2;
+                                   // LLVMcode* tmp1;
+                                   // Factor arg1,arg2;
 
-                                   tmp1 = memoryGet(tmp1); 
+                                   // tmp1 = memoryGet(tmp1); 
 
-                                   tmp1->command=Store;
+                                   // tmp1->command=Store;
 
-                                   arg2 = factorpop();  /* 局所変数%1を取り出す*/
+                                   // arg2 = factorpop();  /* 局所変数%1を取り出す*/
                                    
                                    // strcpy(arg1.vname,$1);
-                                   arg1.type = CONSTANT;
-                                   arg1.val = 0;
+                                   // arg1.type = CONSTANT;
+                                   // arg1.val = 0;        /* 記号表の番地を代入する */       
 
                                    // factorpush(arg2);
 
-                                   (tmp1->args).store.arg1 = arg1;
-                                   (tmp1->args).store.arg2 = arg2;
+                                   // (tmp1->args).store.arg1 = arg1;
+                                   // (tmp1->args).store.arg2 = arg2;
 
-                                   addList(tmp1);
+                                   // addList(tmp1);
 					/*-----------------------------------------------------*/		
                                   
 					
@@ -294,7 +362,9 @@ assignment_statement
                                    arg1 = factorpop(); 
                                     
                                    strcpy(arg2.vname,$1);
-                                   arg2.type = flag;
+                                   
+                                   lookup($1);
+                                   arg2.type = varType;
                                    arg2.val = cnrt;
 
                                    factorpush(arg2);
