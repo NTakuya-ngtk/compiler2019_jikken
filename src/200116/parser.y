@@ -52,7 +52,7 @@ program
                      }
               }
        PROGRAM IDENT {
-
+                            //大域変数を格納するfundeclを作るコード
  
                                    
                             }
@@ -738,7 +738,7 @@ id_list
                                    LLVMcode* tmp;
                                    tmp = memoryGet(tmp); 
                                    Factor arg1,retval;
-                                   switch(flag){
+                                   switch(varType){
                                           case GLOBAL_VAR:
                                                  /* 大域変数を出力する*/
                                                  displayGlobalVar($3);
