@@ -60,7 +60,7 @@ void addList(LLVMcode *tmp){
 			fprintf(stderr,"unexpected error\n");
 		}
 
-		declhd->codes = tmp; //関数定義の命令列の先頭の命令に設定
+		decltl->codes = tmp; //関数定義の命令列の先頭の命令に設定
 		codehd = codetl = tmp; // 生成中の命令列の末尾として記憶
 	} else {                /*解析中の関数の命令列に1つ以上命令が存在する場合*/
 		codetl->next = tmp;   //命令列の末尾に*tmpを追加

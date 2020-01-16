@@ -52,14 +52,14 @@ program
                      }
               }
        PROGRAM IDENT {
-                            //大域変数を格納するfundeclを作るコード
-                             Fundecl *new;
-				 new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
-				 new->next = NULL;
+                            // 大域変数を格納するfundeclを作るコード
+                            Fundecl *new;
+				new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
+				new->next = NULL;
 
                              /* 線形リストのポインタを更新 */
-                             declhd = new;
-                             new->codes = NULL;       //命令セットは持たないため．
+                            declhd = new;
+                            decltl = new;
                             
                                    
                      }
@@ -90,9 +90,10 @@ var_decl
 	;
 
 subprog_decl_part
-       : /* empty */ { // ここがメイン関数の入るところ
+       : /* empty */ 
+       { // ここがメイン関数の入るところ
          
-					// printf("debug");
+					printf("debug");
                                    Fundecl *mainfunc;
 					mainfunc = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
 					mainfunc->next = NULL;
@@ -101,9 +102,19 @@ subprog_decl_part
                                    // main関数のため，"main"を格納
 					strcpy(mainfunc->fname,"main");
 
-                                    /* 線形リストのポインタを更新 */
+                                   /* 線形リストのポインタを更新 */
+                                    if(decltl == NULL) {   /* 関数定義の線形リストの最初であるとき*/
+                                          declhd = decltl = mainfunc;
+                                   } else {             /* 関数定義の線形リストに1つ以上存在する時*/
+                                          decltl->next = mainfunc;  // 関数定義列の末尾に*newを追加
+                                          decltl = mainfunc;        // 関数定義列の末尾として*newを保存する
+                                   }
+
                                    // decltl->next = mainfunc;  // 関数定義列の末尾に*newを追加
-                                   decltl = mainfunc;        // 関数定義列の末尾として*newを保存する
+                                   // decltl = mainfunc;        // 関数定義列の末尾として*newを保存する
+
+                                   /* codehdおよびcodetlのリセット */
+                                   codehd = codetl = NULL;
 
                                    /* main関数をAllocaするコード*/
                                    LLVMcode* tmp;
@@ -149,7 +160,7 @@ subprog_decl_part
 
        }
        | subprog_decl_list SEMICOLON
-				;
+	;
 
 subprog_decl_list
        : subprog_decl_list SEMICOLON subprog_decl
@@ -182,8 +193,18 @@ proc_name
                                    strcpy(new->fname,$1);
 					                            
                                     /* 線形リストのポインタを更新 */
-                                    decltl->next = new;  // 関数定義列の末尾に*newを追加
-                                    decltl = new;        // 関数定義列の末尾として*newを保存する					
+                                    if(decltl == NULL) {   /* 関数定義の線形リストの最初であるとき*/
+                                          declhd = decltl = new;
+                                   } else {             /* 関数定義の線形リストに1つ以上存在する時*/
+                                          decltl->next = new;  // 関数定義列の末尾に*newを追加
+                                          decltl = new;        // 関数定義列の末尾として*newを保存する
+                                   
+                                   }
+
+                                   // 新しい関数列ができたので，codehdとcodetlをnullにする
+                                   codehd = codetl = NULL;
+                                   // decltl->next = new;  // 関数定義列の末尾に*newを追加
+                                   // decltl = new;        // 関数定義列の末尾として*newを保存する					
 
 					/*-----------------------------------------------------*/		
                                   
