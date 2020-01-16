@@ -262,10 +262,12 @@ void displayLLVMfundecl(Fundecl *decl){
 	if(decl == NULL){
 		return;
 	}
+	if(decl->codes != NULL){
+		fprintf(FP,"define i32 @%s() {\n", decl->fname);
+		displayLLVMcodes(decl->codes);
+		fprintf(FP,"}\n");
+	}
 	
-	fprintf(FP,"define i32 @%s() {\n", decl->fname);
-	displayLLVMcodes(decl->codes);
-	fprintf(FP,"}\n");
 
 	if(decl->next != NULL){
 	  fprintf(FP,"\n");
