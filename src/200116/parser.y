@@ -279,7 +279,7 @@ if_statement
 
                                    tmp = memoryGet(tmp); 
 
-                                   tmp->command=Brcond;
+                                   tmp->command=BrCond;
 
                                    arg1 = factorpop();
 
@@ -290,6 +290,7 @@ if_statement
                                    (tmp->args).brcond.arg3 = arg3;
 
                                    addList(tmp);
+                                   brpush(tmp);
                                    
                                    /*----------------------------*/
        }
@@ -306,7 +307,7 @@ while_statement
        ;
 
 for_statement
-       : FOR IDENT {/* lookup($2); */} ASSIGN expression TO expression DO statement
+       : FOR IDENT {/* lookup($2); */ } ASSIGN expression TO expression DO statement
        ;
 
 proc_call_statement
@@ -314,12 +315,44 @@ proc_call_statement
        ;
 
 proc_call_name
-       : IDENT { /* lookup($1); */}
+       : IDENT { /* lookup($1); */ }
        ;
 
 block_statement
        : SBEGIN {
-                     /* ここが，ブロックのはじめであるため，関数の書き出しを行うなら，ここであると考えらえれる*/
+                                   if(bstack.top != 0){
+                                          /*制御の始めのためラベルを格納する*/
+
+                                          LLVMcode* tmp;
+                                          int l;
+
+                                          tmp = memoryGet(tmp); 
+
+                                          tmp->command=Label;
+
+                                          l = cnrt;
+                                          cnrt++;
+
+                                          (tmp->args).label.l = l;
+                                          
+                                          addList(tmp);
+                                          
+                                          LLVMcode* backpatch;
+
+                                          if(bstack.top % 2 != 0){
+                                                 backpatch = brpop();
+                                                 if(backpatch->command == BrCond){
+                                                        (backpatch->args).brcond.arg2 = l;
+                                                 }else{
+                                                        (backpatch->args).bruncond.arg1 = l;
+                                                 } 
+                                          }else{
+                                                 backpatch = brpop();
+                                                 (backpatch->args).brcond.arg3 = l; // このパスは何故か通っていない。
+                                          }
+                                          
+                                   }
+                                   /*----------------------------*/
        }
        statement_list SEND
        ;

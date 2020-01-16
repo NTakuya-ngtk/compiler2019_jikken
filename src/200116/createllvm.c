@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "createllvm.h"
 #include "symbol.h"
-#define FP fp
+#define FP stdout
 
 Factorstack fstack;  // 整数もしくはレジスタ番号を保持するスタック
 brstack bstack;       // 関数の戻り位置を保持するスタック
@@ -26,19 +26,20 @@ void factorpush(Factor x){
 	return;
 }
 
+
 void init_brstak(){
 	bstack.top = 0;
 	return;
 }
 
-LLVMcode brpop(){
-	LLVMcode tmp;
+LLVMcode* brpop(){
+	LLVMcode* tmp;
 	tmp = bstack.element[bstack.top];
 	bstack.top --;
 	return tmp;
 }
 
-void brpush(LLVMcode x){
+void brpush(LLVMcode* x){
 	bstack.top ++;
 	bstack.element[bstack.top] = x;
 	return;
@@ -146,7 +147,7 @@ void displayLLVMcodes(LLVMcode *code){
 			break;
 
 	  	case BrCond:
-			fprintf(FP,"br i1");
+			fprintf(FP,"br i1 ");
 			displayFactor((code->args).brcond.arg1);
 			fprintf(FP,", label %d, label %d",(code->args).brcond.arg2,(code->args).brcond.arg3);
 			fprintf(FP,"\n");
@@ -228,7 +229,7 @@ void displayLLVMcodes(LLVMcode *code){
 			}
 			fprintf(FP,"i32 ");
 			displayFactor((code->args).icmp.arg1);
-			fprintf(FP," ");
+			fprintf(FP,", ");
 			displayFactor((code->args).icmp.arg2);
 			fprintf(FP,"\n");
 			

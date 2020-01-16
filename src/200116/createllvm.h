@@ -14,10 +14,6 @@ typedef struct{
 	unsigned int top;          /*スタックのトップ位置*/
 }Factorstack;
 
-typedef struct{
-	LLVMcode element[100];   /* スタック 最大要素100まで*/
-	unsigned int top;
-}brstack;
 
 
 /* LLVM 命令の種類 */
@@ -108,6 +104,11 @@ typedef struct llvmcode {
 	struct llvmcode *next;  // 次の命令へのポインタ
 }LLVMcode;
 
+typedef struct{
+	LLVMcode* element[100];   /* スタック 最大要素100まで*/
+	unsigned int top;
+}brstack;
+
 typedef struct fundecl {
 	char fname[256];      //関数名
 	unsigned arity;       //引数個数
@@ -134,8 +135,8 @@ void displayLLVMfundecl(Fundecl *decl); // LLVMの関数列を書き出す関数
 void displayGlobalVar(char *varname);
 
 void init_brstak();
-void brpush(LLVMcode x);
-LLVMcode  brpop();
+void brpush(LLVMcode* x);
+LLVMcode*  brpop();
 
 
 FILE *fp;					//全てで共通に使うファイルポインタ
