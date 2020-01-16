@@ -53,71 +53,7 @@ program
               }
        PROGRAM IDENT {
 
-               		       /*-----------------------------------------------------*/
-
-                                   
-                                   /* 大域変数を格納するfundeclを作るコード*/
-					
-                                   Fundecl *new;
-					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
-					new->next = NULL;
-                                   
-
-                                   // 初回はmain関数のため，"main"を格納
-					strcpy(new->fname,"main");
-
-                                    /* 線形リストのポインタを更新 */
-
-                                   if(decltl == NULL) {   /* 関数定義の線形リストの最初であるとき*/
-                                          declhd = decltl = new;
-                                   } else {             /* 関数定義の線形リストに1つ以上存在する時*/
-                                          decltl->next = new;  // 関数定義列の末尾に*newを追加
-                                          decltl = new;        // 関数定義列の末尾として*newを保存する
-                                   
-                                   }
-                                   /* main関数をAllocaするコード*/
-                                   LLVMcode* tmp;
-                                   Factor retval;
-
-                                   tmp = memoryGet(tmp); 
-
-                                   tmp->command=Alloca;
-
-                                   retval.type = LOCAL_VAR;
-                                   retval.val = cnrt;
-                                   cnrt++;
-
-                                   (tmp->args).alloca.retval = retval;
-                                   
-                                   factorpush(retval);
-
-                                   addList(tmp);
-
-                                   /* ----------------- */
-
-                                   /* main関数のコード番地をstoreするコード*/
-
-                                   LLVMcode* tmp1;
-                                   Factor arg1,arg2;
-
-                                   tmp1 = memoryGet(tmp1); 
-
-                                   tmp1->command=Store;
-
-                                   arg2 = factorpop();  /* 局所変数%1を取り出す*/
-                                   
-                                   // strcpy(arg1.vname,$1);
-                                   arg1.type = CONSTANT;
-                                   arg1.val = 0;
-
-                                   // factorpush(arg2);
-
-                                   (tmp1->args).store.arg1 = arg1;
-                                   (tmp1->args).store.arg2 = arg2;
-
-                                   addList(tmp1);
-
-				       /*-----------------------------------------------------*/
+ 
                                    
                             }
         SEMICOLON outblock {
