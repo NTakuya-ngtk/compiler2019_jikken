@@ -185,7 +185,6 @@ void displayLLVMcodes(LLVMcode *code){
 			break;
 			
 		case Icmp:
-
 			displayFactor((code->args).icmp.retval);
 			fprintf(FP," = icmp ");
 			switch((code->args).icmp.type){
