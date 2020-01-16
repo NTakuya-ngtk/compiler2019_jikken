@@ -58,27 +58,12 @@ program
 				 new->next = NULL;
 
                              /* 線形リストのポインタを更新 */
-                             declhd = decltl = new;
+                             declhd = new;
                              new->codes = NULL;       //命令セットは持たないため．
                             
                                    
-                            }
-        SEMICOLON outblock {
-                                   /* main関数からRetするコード*/
-                                   LLVMcode* tmp;
-                                   Factor arg1;
-
-                                   tmp = memoryGet(tmp); 
-
-                                   tmp->command=Ret;
-
-                                   arg1.type = CONSTANT;
-                                   arg1.val = 0;
-
-                                   (tmp->args).ret.arg1 = arg1;
-                                   addList(tmp);
-       }
-       PERIOD
+                     }
+        SEMICOLON outblock PERIOD
               {      
 	       	displayLLVMfundecl(declhd);
                      fclose(fp);
@@ -108,17 +93,17 @@ subprog_decl_part
        : /* empty */ { // ここがメイン関数の入るところ
          
 					// printf("debug");
-                                   Fundecl *new;
-					new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
-					new->next = NULL;
+                                   Fundecl *mainfunc;
+					mainfunc = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
+					mainfunc->next = NULL;
                                    
 
                                    // main関数のため，"main"を格納
-					strcpy(new->fname,"main");
+					strcpy(mainfunc->fname,"main");
 
                                     /* 線形リストのポインタを更新 */
-                                   decltl->next = new;  // 関数定義列の末尾に*newを追加
-                                   decltl = new;        // 関数定義列の末尾として*newを保存する
+                                   // decltl->next = mainfunc;  // 関数定義列の末尾に*newを追加
+                                   decltl = mainfunc;        // 関数定義列の末尾として*newを保存する
 
                                    /* main関数をAllocaするコード*/
                                    LLVMcode* tmp;
