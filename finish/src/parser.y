@@ -989,10 +989,10 @@ term
         | term MULT factor
         {
                 LLVMcode *tmp;             /* 生成した命令へのポインタ */
-                Factor arg1, arg2, retval; /* 減算の引数・結果 */
+                Factor arg1, arg2, retval; /* 乗算の引数・結果 */
                 tmp = (LLVMcode *)malloc(sizeof(LLVMcode)); /*メモリ確保 */
                 tmp->next = NULL;          /* 次の命令へのポインタを初期化 */
-                tmp->command = Mul;        /* 命令の種類を減算に設定 */
+                tmp->command = Mul;        /* 命令の種類を乗算に設定 */
                 arg2 = factorpop();        /* スタックから第2引数をポップ */
                 arg1 = factorpop();        /* スタックから第1引数をポップ */
                 retval.type = LOCAL_VAR;   /* 結果を格納するレジスタは局所 */
@@ -1009,15 +1009,15 @@ term
                         codetl->next = tmp; /* 命令列の末尾に追加 */
                         codetl = tmp;       /* 命令列の末尾の命令として記憶 */
                 }
-                factorpush( retval ); /* 減算の結果をスタックにプッシュ */
+                factorpush( retval ); /* 乗算の結果をスタックにプッシュ */
         } 
         | term DIV factor
         {
                 LLVMcode *tmp;             /* 生成した命令へのポインタ */
-                Factor arg1, arg2, retval; /* 減算の引数・結果 */
+                Factor arg1, arg2, retval; /* 除算の引数・結果 */
                 tmp = (LLVMcode *)malloc(sizeof(LLVMcode)); /*メモリ確保 */
                 tmp->next = NULL;          /* 次の命令へのポインタを初期化 */
-                tmp->command = Div;        /* 命令の種類を減算に設定 */
+                tmp->command = Div;        /* 命令の種類を除算に設定 */
                 arg2 = factorpop();        /* スタックから第2引数をポップ */
                 arg1 = factorpop();        /* スタックから第1引数をポップ */
                 retval.type = LOCAL_VAR;   /* 結果を格納するレジスタは局所 */
@@ -1034,7 +1034,7 @@ term
                         codetl->next = tmp; /* 命令列の末尾に追加 */
                         codetl = tmp;       /* 命令列の末尾の命令として記憶 */
                 }
-                factorpush( retval ); /* 減算の結果をスタックにプッシュ */
+                factorpush( retval ); /* 除算の結果をスタックにプッシュ */
         } 
         ;
 factor
@@ -1088,9 +1088,9 @@ id_list
                 }else if(flag==LOCAL_VAR){
                         LLVMcode *tmp;             /* 生成した命令へのポインタ */
                         Factor retval; /* allocaの結果 */
-                        tmp = (LLVMcode *)malloc(sizeof(LLVMcode)); /*メモリ確保 */
+                        tmp = (LLVMcode *)malloc(sizeof(LLVMcode)); /* メモリ確保 */
                         tmp->next = NULL;          /* 次の命令へのポインタを初期化 */
-                        tmp->command = Alloca;        /* 命令の種類を加算に設定 */
+                        tmp->command = Alloca;        /* 命令の種類をAllocaに設定 */
                         retval.type = LOCAL_VAR;   /* 結果を格納するレジスタは局所 */
                         strcpy(retval.vname,$1);
                         retval.val = cntr;         /* 新規のレジスタ番号を取得 */
@@ -1113,9 +1113,9 @@ id_list
                 }else if(flag==LOCAL_VAR){
                         LLVMcode *tmp;             /* 生成した命令へのポインタ */
                         Factor retval; /* allocaの結果 */
-                        tmp = (LLVMcode *)malloc(sizeof(LLVMcode)); /*メモリ確保 */
+                        tmp = (LLVMcode *)malloc(sizeof(LLVMcode)); /* メモリ確保 */
                         tmp->next = NULL;          /* 次の命令へのポインタを初期化 */
-                        tmp->command = Alloca;        /* 命令の種類を加算に設定 */
+                        tmp->command = Alloca;        /* 命令の種類をAllocaに設定 */
                         retval.type = LOCAL_VAR;   /* 結果を格納するレジスタは局所 */
                         retval.val = cntr;         /* 新規のレジスタ番号を取得 */
                         cntr++;                   /* カウンタをインクリメント */
