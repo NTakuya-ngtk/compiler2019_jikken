@@ -134,8 +134,8 @@ proc_decl
                 delete_data(); 
                 flag = GLOBAL_VAR;
                 cntr=1;
-        }
-        | PROCEDURE proc_name LPAREN id_list RPAREN SEMICOLON inblock
+                }
+/*        | PROCEDURE proc_name LPAREN id_list RPAREN SEMICOLON inblock */
         ;
 proc_name
         : IDENT 
