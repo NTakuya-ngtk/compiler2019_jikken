@@ -3,6 +3,8 @@
 
 #include"./decl.h"
 
+int argCount;
+
 void init_fstack();
 Factor factorpop();
 void factorpush(Factor); 

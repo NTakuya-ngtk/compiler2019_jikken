@@ -1,8 +1,9 @@
 #ifndef _TABLE_H_
 #define _TABLE_H_
 
-#include"decl.h"
 #define NAME_MAX 16
+
+#include "createllvm.h"
 
 
 void insert_data(char*,Scope,int);

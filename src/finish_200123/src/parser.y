@@ -127,15 +127,18 @@ subprog_decl
         : proc_decl
         ;
 proc_decl
-        : PROCEDURE
-          {flag = LOCAL_VAR;} 
-          proc_name SEMICOLON inblock 
+        :  /* PROCEDURE {flag = LOCAL_VAR; argCount = 0;} proc_name LPAREN proc_id_list RPAREN SEMICOLON inblock
+                {
+                delete_data(); 
+                flag = GLOBAL_VAR;
+                cntr=1;
+                }
+        |  */ PROCEDURE {flag = LOCAL_VAR; } proc_name SEMICOLON inblock 
           {
                 delete_data(); 
                 flag = GLOBAL_VAR;
                 cntr=1;
                 }
-/*        | PROCEDURE proc_name LPAREN id_list RPAREN SEMICOLON inblock */
         ;
 proc_name
         : IDENT 
@@ -1134,6 +1137,10 @@ id_list
                 insert_data($3,flag,cntr-1);
         }
         ;
+
+proc_id_list
+        : IDENT {insert_data($1,flag,cntr-1); argCount++;}
+        | proc_id_list COMMA IDENT {insert_data($3,flag,cntr-1); argCount++;}
 %% 
 yyerror(char *s)
 {

@@ -1,11 +1,11 @@
 program M;
 var x, y, z;
-procedure A;
+procedure A(x);
 var x;
 begin
    x := 1
 end;
-procedure B;
+procedure B(y);
 var y;
 begin
    y := 2;

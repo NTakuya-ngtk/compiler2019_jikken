@@ -181,6 +181,7 @@ void displayLlvmcodes( LLVMcode *code ){
 }
 
 void displayLlvmfundecl( Fundecl *decl ){
+        int count;
         if( decl == NULL ) return;
         if(writeflag == 2){
         fprintf(yyout,"@.str = private unnamed_addr constant [4 x i8] c\"%%d\\0A\\00\", align 1\n");
@@ -190,10 +191,15 @@ void displayLlvmfundecl( Fundecl *decl ){
         fprintf(yyout,"@.str.1 = private unnamed_addr constant [3 x i8] c\"%%d\\00\", align 1\n");
         readflag--;
         }
+        
         if(decl->ret==1){
         fprintf(yyout,"define i32 @%s() {\n", decl->fname );
         }else{
-        fprintf(yyout,"define void @%s() {\n", decl->fname );        
+        fprintf(yyout,"define void @%s(",decl->fname);
+        for(count=0;count<argCount;count++){
+                fprintf(yyout,"i32 ");
+        }
+        fprintf(yyout,")\n");        
         }
         displayLlvmcodes( decl->codes );
         if( decl->ret == 0 ) {
