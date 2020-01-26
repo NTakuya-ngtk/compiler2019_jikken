@@ -104,7 +104,7 @@ void displayLLVMcodes(LLVMcode *code){
 		return;
 	}
 
-	printf("  ");
+	fprintf(FP,"  ");
 
 	switch( code->command){
 		
