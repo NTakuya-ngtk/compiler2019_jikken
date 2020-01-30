@@ -1310,7 +1310,7 @@ expression
        : term
        | PLUS term
        | MINUS term
-       | expression PLUS term
+       | PLUS term
 
 			 {
 				 /* 加算命令をLLVMコードとして生成するCプログラム */
