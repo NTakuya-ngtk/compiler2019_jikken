@@ -1413,7 +1413,7 @@ var_name
 
                                                                           
                                           /*----------------------------*/
-                                          printf("\nprocArgFlag:%d\n",procArgFlag);
+                                          // printf("\nprocArgFlag:%d\n",procArgFlag);
 
                                           if(procArgFlag == 1 ){       //手続き呼び出しの引数の場合
                                                  LLVMcode* call;
@@ -1422,7 +1422,7 @@ var_name
                                                  call = procCallpop();
                                                  ((call->args).call.arg_list)[callCount] = retval.val;
                                                  callCount++;
-                                                 printf("\narglist[%d]:%d\n",callCount-1,((call->args).call.arg_list)[callCount-1]);
+                                                 // printf("\narglist[%d]:%d\n",callCount-1,((call->args).call.arg_list)[callCount-1]);
                                                  procCallpush(call);
 
 

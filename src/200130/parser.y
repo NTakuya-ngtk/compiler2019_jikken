@@ -263,11 +263,17 @@ subprog_decl_list
 
 subprog_decl
        : proc_decl
+       | func_decl
        ;
 
 proc_decl
        : PROCEDURE proc_name SEMICOLON inblock {delete_data();}
        | PROCEDURE proc_name LPAREN proc_id_list RPAREN SEMICOLON inblock {delete_data();}
+       ;
+
+func_decl
+       : FUNCTION func_name SEMICOLON inblock {delete_data();}
+       | FUNCTION func_name LPAREN func_id_list RPAREN SEMICOLON inblock {delete_data();}
        ;
 
 proc_name
@@ -286,6 +292,7 @@ proc_name
                                    // 関数名等を保存
                                    strcpy(new->fname,$1);
                                    new->ret = 0;
+                                   new->arty = 0; // 現段階で引数の個数は0個
 					                            
                                     /* 線形リストのポインタを更新 */
                                     if(decltl == NULL) {   /* 関数定義の線形リストの最初であるとき*/
@@ -353,6 +360,90 @@ proc_name
                             }
        ;
 
+func_name
+       :IDENT {// flag = PROC_NAME; insert_data($1,flag,0);}  
+                            {
+
+		                     /*-----------------------------------------------------*/
+
+                                   /* 以下プログラム名から関数のLLVMコードを生成するCプログラム*/
+
+					
+                            //       Fundecl *new;
+                                   
+				//	new = (Fundecl *)malloc(sizeof(Fundecl)); //メモリを動的に確保
+				//	new->next = NULL;
+                                   // 関数名等を保存
+                            //       strcpy(new->fname,$1);
+                            //       new->ret = 0;
+                            //       new->arty = 0; // 現段階で引数の個数は0個
+					                            
+                                    /* 線形リストのポインタを更新 */
+                            //        if(decltl == NULL) {   /* 関数定義の線形リストの最初であるとき*/
+                            //              declhd = decltl = new;
+                            //       } else {             /* 関数定義の線形リストに1つ以上存在する時*/
+                            //              decltl->next = new;  // 関数定義列の末尾に*newを追加
+                            //              decltl = new;        // 関数定義列の末尾として*newを保存する
+                                   
+                            //       }
+
+                                   // 新しい関数列ができたので，codehdとcodetlをnullにする
+                            //       codehd = codetl = NULL;
+                                   // decltl->next = new;  // 関数定義列の末尾に*newを追加
+                                   // decltl = new;        // 関数定義列の末尾として*newを保存する
+
+                            //       cnrt = 1; // cnrtの初期化
+
+                                   /* -------------------------------------- */
+                                   /* procedureをAllocaするコード*/
+                                   // LLVMcode* tmp;
+                                   // Factor retval;
+
+                                   // tmp = memoryGet(tmp); 
+
+                                   // tmp->command=Alloca;
+
+                                   // cnrt = 1; // cnrtの初期化を行う
+
+                                   // etval.type = LOCAL_VAR;
+                                   // retval.val = cnrt;
+                                   // cnrt++;
+
+                                   // (tmp->args).alloca.retval = retval;
+                                   
+                                   // factorpush(retval);
+
+                                   // addList(tmp);
+
+                                   /* ----------------- */
+
+                                   /* prodecureのコード番地をstoreするコード*/
+
+                                   // LLVMcode* tmp1;
+                                   // Factor arg1,arg2;
+
+                                   // tmp1 = memoryGet(tmp1); 
+
+                                   // tmp1->command=Store;
+
+                                   // arg2 = factorpop();  /* 局所変数%1を取り出す*/
+                                   
+                                   // strcpy(arg1.vname,$1);
+                                   // arg1.type = CONSTANT;
+                                   // arg1.val = 0;        /* 記号表の番地を代入する */       
+
+                                   // factorpush(arg2);
+
+                                   // (tmp1->args).store.arg1 = arg1;
+                                   // (tmp1->args).store.arg2 = arg2;
+
+                                   // addList(tmp1);
+					/* -----------------------------------------------------*/		
+                                  
+					
+                            }
+       ;
+
 inblock
        : { flag = LOCAL_VAR; } 
        var_decl_part statement /* flagを変更する */ 
@@ -383,6 +474,7 @@ statement
        | while_statement
        | for_statement
        | proc_call_statement
+       | func_call_statement
        | null_statement
        | block_statement
        | read_statement
@@ -996,6 +1088,30 @@ proc_call_name
        } 
        ;
 
+
+function_call_statement
+       : function_call_name
+       | function_call_name LPAREN {// procArgFlag =1; callCount = 0;}
+        arg_list RPAREN  {// procArgFlag = 0; LLVMcode*tmp; tmp = procCallpop(); addList(tmp); procからfunctionへうまく書き換える必要がある．}
+       ;
+
+function_call_name
+       : IDENT 
+       {             /* ----------- */
+                     /* Call statement */
+              //       LLVMcode *tmp;
+              //       char name[10];
+
+              //       tmp = memoryGet(tmp);
+              //       tmp->command = Call;
+
+              //       strcpy(name,$1);
+
+              //       strcpy(tmp->args.call.name,name);
+              //       procCallpush(tmp);
+       } 
+       ;
+
 block_statement
        : SBEGIN statement_list SEND
        ;
@@ -1413,7 +1529,7 @@ var_name
 
                                                                           
                                           /*----------------------------*/
-                                          printf("\nprocArgFlag:%d\n",procArgFlag);
+                                          // printf("\nprocArgFlag:%d\n",procArgFlag);
 
                                           if(procArgFlag == 1 ){       //手続き呼び出しの引数の場合
                                                  LLVMcode* call;
@@ -1422,7 +1538,7 @@ var_name
                                                  call = procCallpop();
                                                  ((call->args).call.arg_list)[callCount] = retval.val;
                                                  callCount++;
-                                                 printf("\narglist[%d]:%d\n",callCount-1,((call->args).call.arg_list)[callCount-1]);
+                                                 // printf("\narglist[%d]:%d\n",callCount-1,((call->args).call.arg_list)[callCount-1]);
                                                  procCallpush(call);
 
 
@@ -1470,6 +1586,7 @@ id_list
                                                  addList(tmp);
 
                                                  break;
+
                                    
                                           default:
                                                  break;
