@@ -5,8 +5,8 @@
 define void @twice(i32){
   %2 = alloca i32, align 4
   store i32 %0, i32* %2, align 4
-  %3 = load i32, i32* %0, align 4
-  %4 = load i32, i32* %0, align 4
+  %3 = load i32, i32* %2, align 4
+  %4 = load i32, i32* %2, align 4
   %5 = add nsw i32 %3, %4
   store i32 %5, i32* @r, align 4
   ret void 

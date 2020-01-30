@@ -309,13 +309,15 @@ proc_decl
                      arg2 = factorpop();  /* 局所変数を取り出す*/
                      
                      // strcpy(arg1.vname,$1);
-                     arg1=lookup_data((decltl->args)[procArgCount-roopCount-1].vname);
+                     arg1=(decltl->args)[procArgCount-roopCount-1];
                      // printf("test:%s\n",(decltl->args)[roopCount].vname);
-
                      // factorpush(arg2);
 
                      (tmp1->args).store.arg1 = arg1;
                      (tmp1->args).store.arg2 = arg2;
+
+                     arg1.val = arg2.val;
+                     insert_data(arg1.vname,LOCAL_VAR,arg1.val);
 
                      addList(tmp1);     
               }
@@ -1577,14 +1579,14 @@ id_list
 
 proc_id_list
        : IDENT 
-       {      
-              insert_data($1,LOCAL_VAR,cnrt);
-              cnrt++;
+       {     
               
               Factor arg;
+              arg.val = cnrt;
+              arg.type = LOCAL_VAR;
+              strcpy(arg.vname,$1);
+              cnrt++;
 
-              arg = lookup_data($1);
-              // factorpush(arg);
               (decltl->args)[procArgCount] = arg;
 
               procArgCount++;
@@ -1593,13 +1595,13 @@ proc_id_list
        } 
        | proc_id_list COMMA IDENT 
        {      
-              insert_data($3,LOCAL_VAR,cnrt);
-              cnrt++;
 
               Factor arg;
+              arg.val = cnrt;
+              arg.type = LOCAL_VAR;
+              strcpy(arg.vname,$3);
+              cnrt++;
 
-              arg = lookup_data($3);
-              // factorpush(arg);
               (decltl->args)[procArgCount] = arg;
               
               procArgCount++;
