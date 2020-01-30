@@ -267,7 +267,63 @@ subprog_decl
 
 proc_decl
        : PROCEDURE proc_name SEMICOLON inblock {delete_data();}
-       | PROCEDURE proc_name LPAREN proc_id_list RPAREN SEMICOLON inblock {delete_data();}
+       | PROCEDURE proc_name LPAREN proc_id_list RPAREN SEMICOLON {
+              
+              cnrt++; // 局所変数のスキップ
+
+              int roopCount = 0;
+
+              for(roopCount = 0;roopCount < procArgCount;roopCount++){
+
+                     LLVMcode* tmp;
+                     tmp = memoryGet(tmp); 
+                     Factor retval;
+
+                     tmp = memoryGet(tmp); 
+
+                     tmp->command=Alloca;
+
+                     retval.type = LOCAL_VAR;
+                     retval.val = cnrt;
+                     cnrt++;
+
+                     (tmp->args).alloca.retval = retval;
+                     
+                     factorpush(retval);
+
+                     addList(tmp);   
+
+                     
+              }
+
+              for(roopCount = 0;roopCount < procArgCount;roopCount++){
+                     /* allocaした番地を番地をstoreするコード*/
+
+                     LLVMcode* tmp1;
+                     Factor arg1,arg2;
+
+                     tmp1 = memoryGet(tmp1); 
+
+                     tmp1->command=Store;
+
+                     arg2 = factorpop();  /* 局所変数を取り出す*/
+                     
+                     // strcpy(arg1.vname,$1);
+                     arg1=lookup_data((decltl->args)[procArgCount-roopCount-1].vname);
+                     // printf("test:%s\n",(decltl->args)[roopCount].vname);
+
+                     // factorpush(arg2);
+
+                     (tmp1->args).store.arg1 = arg1;
+                     (tmp1->args).store.arg2 = arg2;
+
+                     addList(tmp1);     
+              }
+             
+             
+
+       } 
+       inblock {delete_data();}
        ;
 
 proc_name
@@ -301,7 +357,7 @@ proc_name
                                    // decltl->next = new;  // 関数定義列の末尾に*newを追加
                                    // decltl = new;        // 関数定義列の末尾として*newを保存する
 
-                                   cnrt = 1; // cnrtの初期化
+                                   cnrt = 0; // cnrtの初期化
 
                                    /* -------------------------------------- */
                                    /* procedureをAllocaするコード*/
@@ -1521,97 +1577,35 @@ id_list
 
 proc_id_list
        : IDENT 
-       {      LLVMcode* tmp;
-              tmp = memoryGet(tmp); 
-              Factor retval;
-
-              tmp = memoryGet(tmp); 
-
-              tmp->command=Alloca;
-
-               insert_data($1,LOCAL_VAR,cnrt); 
-
-              // cnrt = 1; // cnrtの初期化を行う
-
-              retval.type = LOCAL_VAR;
-              retval.val = cnrt;
+       {      
+              insert_data($1,LOCAL_VAR,cnrt);
               cnrt++;
+              
+              Factor arg;
+
+              arg = lookup_data($1);
+              // factorpush(arg);
+              (decltl->args)[procArgCount] = arg;
+
               procArgCount++;
 
-              (tmp->args).alloca.retval = retval;
               
-              factorpush(retval);
-
-              addList(tmp);   
-
-               /* allocaした番地を番地をstoreするコード*/
-
-              LLVMcode* tmp1;
-              Factor arg1,arg2;
-
-              tmp1 = memoryGet(tmp1); 
-
-              tmp1->command=Store;
-
-              arg2 = factorpop();  /* 局所変数を取り出す*/
-              
-              // strcpy(arg1.vname,$1);
-              arg1 = lookup_data($1);
-
-              // factorpush(arg2);
-
-              (tmp1->args).store.arg1 = arg1;
-              (tmp1->args).store.arg2 = arg2;
-
-              addList(tmp1);        
-             
        } 
        | proc_id_list COMMA IDENT 
-       {      LLVMcode* tmp;
-              tmp = memoryGet(tmp); 
-              Factor retval;
-
-              tmp = memoryGet(tmp); 
-
-              tmp->command=Alloca;
-
-               insert_data($3,LOCAL_VAR,cnrt); 
-               
-
-              // cnrt = 1; // cnrtの初期化を行う
-
-              retval.type = LOCAL_VAR;
-              retval.val = cnrt;
+       {      
+              insert_data($3,LOCAL_VAR,cnrt);
               cnrt++;
+
+              Factor arg;
+
+              arg = lookup_data($3);
+              // factorpush(arg);
+              (decltl->args)[procArgCount] = arg;
+              
               procArgCount++;
 
-              (tmp->args).alloca.retval = retval;
               
-              factorpush(retval);
-
-              addList(tmp);
-
-              /* allocaした番地を番地をstoreするコード*/
-
-              LLVMcode* tmp1;
-              Factor arg1,arg2;
-
-              tmp1 = memoryGet(tmp1); 
-
-              tmp1->command=Store;
-
-              arg2 = factorpop();  /* 局所変数を取り出す*/
-              
-              // strcpy(arg1.vname,$1);
-              arg1 = lookup_data($3);
-
-              // factorpush(arg2);
-
-              (tmp1->args).store.arg1 = arg1;
-              (tmp1->args).store.arg2 = arg2;
-
-              addList(tmp1);
-       } 
+       }
        ;
 
 %%
