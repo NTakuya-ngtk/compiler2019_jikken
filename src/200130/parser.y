@@ -518,7 +518,18 @@ else_statement
                                    /*----------------------------*/
                      }
         statement 
-                     {
+                     {             /* 制御文を記述する */ // | BrUncond 
+
+                                   LLVMcode* tmp1;
+                                   int arg1;
+
+                                   tmp1 = memoryGet(tmp1); 
+                                   arg1 = cnrt;
+                                   tmp1->command=BrUncond;
+
+                                   (tmp1->args).bruncond.arg1 = arg1;
+
+                                   addList(tmp1);
 
                                    /* 制御文を記述する */  // | Label
 
@@ -550,7 +561,19 @@ else_statement
                                    /*----------------------------*/
                      }
         
-       | /* empty */ {
+       | /* empty */ {            
+                                    /* 制御文を記述する */ // | BrUncond 
+
+                                   LLVMcode* tmp1;
+                                   int arg1;
+
+                                   tmp1 = memoryGet(tmp1); 
+                                   arg1 = cnrt;
+                                   tmp1->command=BrUncond;
+
+                                   (tmp1->args).bruncond.arg1 = arg1;
+
+                                   addList(tmp1);
 
                                    /* 制御文を記述する */  // | Label
 
@@ -785,7 +808,7 @@ for_statement
 
 
 
-                                   /*整数比較命令（SLE）でIDENTとTO後の値を比較する*/
+                                   /* 整数比較命令（SLE）でIDENTとTO後の値を比較する*/
 
                                    LLVMcode* tmp;
                                    Cmptype type;
@@ -834,9 +857,9 @@ for_statement
                                    addList(tmp2);
                                    brpush(tmp2);
                                    
-                                   /*----------------------------*/
+                                   /* ----------------------------*/
 
-                                   /*----------------------------*/
+                                   /* ----------------------------*/
 
                                    /* 制御文を記述する */  // | Label
 
@@ -853,7 +876,7 @@ for_statement
                                    (tmp3->args).label.l = l;
 
                                    addList(tmp3);
-                                   /*----------------------------*/
+                                   /* ----------------------------*/
 
 
                             }
@@ -958,7 +981,8 @@ proc_call_statement
 
 proc_call_name
        : IDENT 
-       { 
+       {             /* ----------- */
+                     /* Call statement */
                      LLVMcode *tmp;
                      char name[10];
 
@@ -1519,11 +1543,33 @@ proc_id_list
               
               factorpush(retval);
 
-              addList(tmp);           
+              addList(tmp);   
+
+               /* allocaした番地を番地をstoreするコード*/
+
+              LLVMcode* tmp1;
+              Factor arg1,arg2;
+
+              tmp1 = memoryGet(tmp1); 
+
+              tmp1->command=Store;
+
+              arg2 = factorpop();  /* 局所変数を取り出す*/
+              
+              // strcpy(arg1.vname,$1);
+              arg1.type = CONSTANT;
+              arg1.val = 0; // 記号表の番地を代入する
+
+              // factorpush(arg2);
+
+              (tmp1->args).store.arg1 = arg1;
+              (tmp1->args).store.arg2 = arg2;
+
+              addList(tmp1);        
              
        } 
        | proc_id_list COMMA IDENT 
-       {   LLVMcode* tmp;
+       {      LLVMcode* tmp;
               tmp = memoryGet(tmp); 
               Factor retval;
 
@@ -1546,6 +1592,28 @@ proc_id_list
               factorpush(retval);
 
               addList(tmp);
+
+              /* allocaした番地を番地をstoreするコード*/
+
+              LLVMcode* tmp1;
+              Factor arg1,arg2;
+
+              tmp1 = memoryGet(tmp1); 
+
+              tmp1->command=Store;
+
+              arg2 = factorpop();  /* 局所変数を取り出す*/
+              
+              // strcpy(arg1.vname,$1);
+              arg1.type = CONSTANT;
+              arg1.val = 0; // 記号表の番地を代入する
+
+              // factorpush(arg2);
+
+              (tmp1->args).store.arg1 = arg1;
+              (tmp1->args).store.arg2 = arg2;
+
+              addList(tmp1);
        } 
        ;
 

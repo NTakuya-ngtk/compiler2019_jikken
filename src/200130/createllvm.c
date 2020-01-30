@@ -274,13 +274,13 @@ void displayLLVMcodes(LLVMcode *code){
 		case Call:
 			fprintf(FP,"call void @%s(",(code->args).call.name);
 			int tmpCount = 0;
-			if(tmpCount < procArgCount){
-				while(tmpCount < procArgCount){
+			if(tmpCount < procArgCount-1){
+				while(tmpCount < procArgCount-1){
 					Factor tmp;
 					fprintf(FP,"i32 %%%d,",(code->args).call.arg_list[tmpCount]);
 					tmpCount++;
 				}
-			}else if(tmpCount == procArgCount){
+			}if(tmpCount == procArgCount-1){
 				fprintf(FP,"i32 %%%d",(code->args).call.arg_list[tmpCount]);		
 			}
 			fprintf(FP,")\n",(code->args).call.name);
@@ -327,7 +327,8 @@ void displayLLVMfundecl(Fundecl *decl){
 
 
 	if(decl->codes != NULL){
-
+		int tempArgCount;
+		tempArgCount = procArgCount;
 		if(decl->ret ==1){
 			fprintf(FP,"define i32");
 		} else {
@@ -336,18 +337,18 @@ void displayLLVMfundecl(Fundecl *decl){
 		fprintf(FP," @%s(",decl->fname);
 		// 変数リストの書き出し
 		if(decl->ret ==0){
-			if(procArgCount > 1){
-				while(procArgCount > 1){
+			if(tempArgCount > 1){
+				while(tempArgCount > 1){
 					fprintf(FP,"i32, ");
-					procArgCount--;
+					tempArgCount--;
 				}
 				fprintf(FP,"i32");
-			}else if(procArgCount == 1){
+			}else if(tempArgCount == 1){
 				fprintf(FP,"i32");
 			}
 		}
 
-		fprintf(FP,")\n");
+		fprintf(FP,"){\n");
 
 		displayLLVMcodes(decl->codes);
 		fprintf(FP,"}\n");

@@ -436,7 +436,7 @@ if_statement
                                    (tmp->args).brcond.arg2 = arg2;
 
                                    addList(tmp);
-                                   brpush(tmp);
+                                   brpush(tmp); // arg3をバックパッチで決める．
                                    
                                    /*----------------------------*/
                      }
@@ -514,7 +514,18 @@ else_statement
                                    /*----------------------------*/
                      }
         statement 
-                     {
+                     {             /* 制御文を記述する */ // | BrUncond 
+
+                                   LLVMcode* tmp1;
+                                   int arg1;
+
+                                   tmp1 = memoryGet(tmp1); 
+                                   arg1 = cnrt;
+                                   tmp1->command=BrUncond;
+
+                                   (tmp1->args).bruncond.arg1 = arg1;
+
+                                   addList(tmp1);
 
                                    /* 制御文を記述する */  // | Label
 
@@ -548,6 +559,20 @@ else_statement
         
        | /* empty */ {
 
+                                  /* 制御文を記述する */ // | BrUncond 
+
+                                   LLVMcode* tmp1;
+                                   int arg1;
+
+                                   tmp1 = memoryGet(tmp1); 
+                                   arg1 = cnrt;
+                                   tmp1->command=BrUncond;
+
+                                   (tmp1->args).bruncond.arg1 = arg1;
+
+                                   addList(tmp1);
+                                   
+
                                    /* 制御文を記述する */  // | Label
 
                                    LLVMcode* tmp;
@@ -574,6 +599,7 @@ else_statement
                                    }else{
                                           (backpatch->args).bruncond.arg1 = l;
                                    }
+
                                    
                                    /*----------------------------*/
                      }
@@ -735,7 +761,7 @@ for_statement
                                    addList(tmp2);
 
 
-                            /* 制御文を記述する */  // | Label
+                                   /* 制御文を記述する */  // | Label
 
                                    LLVMcode* tmp3;
                                    int l;
@@ -781,7 +807,7 @@ for_statement
 
 
 
-                                   /*整数比較命令（SLE）でIDENTとTO後の値を比較する*/
+                                   /* 整数比較命令（SLE）でIDENTとTO後の値を比較する */
 
                                    LLVMcode* tmp;
                                    Cmptype type;
