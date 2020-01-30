@@ -1591,7 +1591,7 @@ proc_id_list
               
               factorpush(retval);
 
-              addList(tmp); 
+              addList(tmp);
 
               /* allocaした番地を番地をstoreするコード*/
 
